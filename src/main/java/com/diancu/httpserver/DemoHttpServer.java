@@ -1,23 +1,20 @@
 package com.diancu.httpserver;
 
-import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
+import lombok.extern.slf4j.Slf4j;
+import java.nio.file.Files;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 public class DemoHttpServer {
     private final ServerConfiguration config;
-    private Executor executor;
+    private ExecutorService executor;
     private AtomicBoolean active = new AtomicBoolean(true);
 
     public DemoHttpServer(ServerConfiguration config) {
@@ -41,7 +38,7 @@ public class DemoHttpServer {
                 while (active.get()) {
                     Socket socket = serverSocket.accept();
                     log.info("New connection from {}", socket.getRemoteSocketAddress().toString());
-                    CompletableFuture.runAsync(() -> handleNewConnection(socket), executor);
+                    CompletableFuture.runAsync(new ConnectionHandler(socket), executor);
                 }
                 log.info("Shutting down ...");
             } catch (IOException e) {
@@ -50,41 +47,21 @@ public class DemoHttpServer {
         });
     }
 
-    private void handleNewConnection(Socket socket)  {
-        PrintWriter out = null;
-        try {
-            out = new PrintWriter(socket.getOutputStream());
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String[] methodAndArguments = getMethodAndArguments(in.readLine());
-            if ( methodAndArguments.length == 3) {
-                HttpMethodHandler handler = getMethodHandler(methodAndArguments[0]);
-                //handle request depending on HTTP method
-                handler.handle(methodAndArguments, in, out);
-            }
-            out.write(StatusCodes.BAD_REQUEST);
-
-        } catch (IOException e) {
-            log.error("error handling new connection", e);
-            if (out != null) {
-                out.write(StatusCodes.INTERNAL_ERROR);
-            }
-        }
-    }
-
-    private HttpMethodHandler getMethodHandler(String method) {
-        if ("GET".equals(method)) {
-            return new GetMethodHandler();
-        }
-        throw new UnsupportedMethodException(method);
-    }
-
-    private String[] getMethodAndArguments(String firstLine) {
-        Objects.requireNonNull(firstLine);
-        return firstLine.split("\\s");
-    }
-
     public void stop() {
         log.info("Server stop received");
         active.set(false);
+        executor.shutdown();
+    }
+
+
+    public static void main(String[] args) {
+
+        try {
+            new DemoHttpServer(new ServerConfiguration(Files.createTempDirectory("demohttpserver").toFile()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

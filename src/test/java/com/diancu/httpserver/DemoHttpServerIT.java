@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public class ServerIT {
+public class DemoHttpServerIT {
 
     private ServerConfiguration config;
     private DemoHttpServer server;

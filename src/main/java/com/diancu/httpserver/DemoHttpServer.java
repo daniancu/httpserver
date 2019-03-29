@@ -3,6 +3,8 @@ package com.diancu.httpserver;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.io.IOException;
@@ -77,11 +79,13 @@ public class DemoHttpServer {
     public static void main(String[] args) {
         log.info("Starting http server...");
         try {
-            URL sitefolderUrl = DemoHttpServer.class.getResource("site");
+            URL in = DemoHttpServer.class.getClassLoader().getResource("site");
+            if (in != null) {
 
-            ServerConfiguration config = new ServerConfiguration(Files.createTempDirectory("config").toFile());
+                ServerConfiguration config = new ServerConfiguration(new File(in.getPath()));
 
-            new DemoHttpServer(config).start().join();
+                new DemoHttpServer(config).start().join();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

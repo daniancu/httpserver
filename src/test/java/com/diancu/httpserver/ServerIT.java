@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public class ServerTest {
+public class ServerIT {
 
     private ServerConfiguration config;
     private DemoHttpServer server;
@@ -22,11 +22,12 @@ public class ServerTest {
     private CompletableFuture<Void> serverHandler;
 
     @Before
-    public void setup() throws IOException {
+    public void setup() throws IOException, InterruptedException {
         tempRoot = Files.createTempDirectory("httpsrv");
         config = new ServerConfiguration(tempRoot.toFile());
         server = new DemoHttpServer(config);
-        serverHandler =  server.start();
+        server.start();
+        Thread.sleep(1000);
     }
 
     @After
@@ -35,7 +36,7 @@ public class ServerTest {
     }
 
     @Test
-    public void testWhenCLlentInitiateConnectionServerAcceptIt() throws IOException {
+    public void testGetMethod() throws IOException {
 
         index = new File(tempRoot.toFile(), "index.html");
         FileWriter fileWriter = new FileWriter(index);
@@ -47,6 +48,11 @@ public class ServerTest {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
+        Assert.assertEquals("status code error", 200, con.getResponseCode());
+        Assert.assertEquals("response message error", "OK", con.getResponseMessage());
+        Assert.assertEquals( "content type error", "text/html", con.getHeaderField(HttpHeaders.CONTENT_TYPE));
+        Assert.assertEquals(String.valueOf(token.getBytes().length), con.getHeaderField(HttpHeaders.CONTENT_LENGTH));
+
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
         String inputLine;
@@ -55,9 +61,9 @@ public class ServerTest {
             content.append(inputLine);
         }
         in.close();
+        Assert.assertEquals("file content error", token, content.toString());
+
         con.disconnect();
-        Assert.assertEquals(200, con.getResponseCode());
-        Assert.assertEquals("token not returned", token, content.toString());
 
     }
 

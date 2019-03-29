@@ -1,22 +1,22 @@
 package com.diancu.httpserver;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
-
+@Slf4j
 public class HttpInputHandler implements Closeable {
-
-
-    private final InputStream inputStream;
     private BufferedReader inReader;
     private StatusLine statusLine;
 
     public HttpInputHandler(InputStream inputStream) {
-        this.inputStream = inputStream;
         inReader = new BufferedReader(new InputStreamReader(inputStream));
     }
 
     public synchronized StatusLine readStatusLine() throws IOException, InvalidStatusLineException {
-        if (statusLine != null) {
+        if (statusLine == null) {
+            log.debug("Reading status line...");
             statusLine = new StatusLine(inReader.readLine());
+            log.debug("statusLine='{}'", statusLine);
             return statusLine;
         }
         throw new IllegalStateException("Status line already readStatusLine");

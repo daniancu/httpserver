@@ -2,14 +2,14 @@ package com.diancu.httpserver;
 
 import java.io.*;
 
-public class HttpInputReader implements Closeable {
+public class HttpInputHandler implements Closeable {
 
 
     private final InputStream inputStream;
     private BufferedReader inReader;
     private StatusLine statusLine;
 
-    public HttpInputReader(InputStream inputStream) {
+    public HttpInputHandler(InputStream inputStream) {
         this.inputStream = inputStream;
         inReader = new BufferedReader(new InputStreamReader(inputStream));
     }

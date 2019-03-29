@@ -55,10 +55,11 @@ public class DemoHttpServer {
 
 
     public static void main(String[] args) {
-
+        log.info("Starting http server...");
         try {
-            new DemoHttpServer(new ServerConfiguration(Files.createTempDirectory("demohttpserver").toFile()));
-        } catch (IOException e) {
+            new DemoHttpServer(new ServerConfiguration(Files.createTempDirectory("demohttpserver").toFile())).start().join();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

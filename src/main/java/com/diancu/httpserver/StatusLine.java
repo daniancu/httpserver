@@ -1,8 +1,12 @@
 package com.diancu.httpserver;
 
+import lombok.ToString;
+
 import java.io.*;
 import java.util.Objects;
 
+
+@ToString
 public class StatusLine {
 
     public StatusLine(String line) throws InvalidStatusLineException {

@@ -17,9 +17,8 @@ public class HttpInputHandler implements Closeable {
             log.debug("Reading status line...");
             statusLine = new StatusLine(inReader.readLine());
             log.debug("statusLine='{}'", statusLine);
-            return statusLine;
         }
-        throw new IllegalStateException("Status line already readStatusLine");
+        return statusLine;
     }
 
     @Override

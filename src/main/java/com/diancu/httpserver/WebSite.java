@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 
 @Slf4j
-public class WebResourceManager {
+public class WebSite {
 
     private final File rootFolder;
 
-    public WebResourceManager(File rootFolder) {
+    public WebSite(File rootFolder) {
         if (rootFolder != null && rootFolder.isDirectory()) {
             this.rootFolder = rootFolder;
         } else {

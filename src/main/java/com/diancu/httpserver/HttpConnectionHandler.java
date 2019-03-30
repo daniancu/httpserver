@@ -35,14 +35,14 @@ public class HttpConnectionHandler implements Closeable, Runnable {
             log.debug("statusLine: {}", statusLine);
             HttpHeaders headers = httpReader.readHeaders();
 
-            HttpMethodHandler handler = handlers.getHandler(statusLine.getMethod());
+            HttpRequestHandler handler = handlers.getHandler(statusLine.getMethod());
 
             if (handler != null) {
                 handler.handle(statusLine, headers, outputHandler);
             } else {
                 //this method is not supported yet
                 log.debug("Method {} not supported", statusLine.getMethod());
-                outputHandler.writeStatusBadRequest().writeNewLine().flush();
+                outputHandler.writeStatusNotImplemented().writeNewLine().flush();
             }
         } catch (IOException e) {
             log.error("Connection error", e);

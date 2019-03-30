@@ -4,9 +4,7 @@ package com.diancu.httpserver;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -38,7 +36,7 @@ public class DemoHttpServer {
             t.setName("DemoHttpServerThread-" + threadCount.incrementAndGet());
             return t;
         });
-        handlers = new HttpHandlers(new WebResourceManager(config.getRootFolder()));
+        handlers = new HttpHandlers(new WebSite(config.getRootFolder()));
     }
 
     public CompletableFuture<Void> start() {
@@ -79,10 +77,10 @@ public class DemoHttpServer {
     public static void main(String[] args) {
         log.info("Starting http server...");
         try {
-            URL in = DemoHttpServer.class.getClassLoader().getResource("site");
-            if (in != null) {
+            URL embeddedSiteLocation = DemoHttpServer.class.getClassLoader().getResource("site");
+            if (embeddedSiteLocation != null) {
 
-                ServerConfiguration config = new ServerConfiguration(new File(in.getPath()));
+                ServerConfiguration config = new ServerConfiguration(new File(embeddedSiteLocation.getPath()));
 
                 new DemoHttpServer(config).start().join();
             }

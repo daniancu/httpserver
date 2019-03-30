@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 
 public class HttpOutputHandler {
     private final PrintWriter writer;
@@ -44,10 +45,21 @@ public class HttpOutputHandler {
         return this;
     }
 
+    public HttpOutputHandler writeStatusNotImplemented() {
+        writer.println("HTTP/1.1 501 Not Implemented");
+        return this;
+    }
+
+
     public void writeHeader(String headerName, String headerValue) {
         writer.print(headerName);
         writer.print(": ");
         writer.println(headerValue);
+    }
+
+    public void writeHeaderServerAndDate() {
+        writeHeader("Server", "HttpDemoServer 1.0");
+        writeHeader("Date", String.valueOf(new Date()));
     }
 
     public void writeFromPath(Path path) throws IOException {

@@ -4,14 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpHandlers {
-    private Map<String, HttpMethodHandler> methodHandlers;
+    private Map<String, HttpRequestHandler> methodHandlers;
 
-    public HttpHandlers(WebResourceManager webResourceManager) {
+    public HttpHandlers(WebSite webSite) {
         this.methodHandlers = new HashMap<>();
-        methodHandlers.put("GET", new GetMethodHandler(webResourceManager));
+        methodHandlers.put("GET", new GetRequestHandler(webSite));
+        methodHandlers.put("HEAD", new GetRequestHandler(webSite, false));
     }
 
-    public HttpMethodHandler getHandler(String method) {
+    public HttpRequestHandler getHandler(String method) {
         return methodHandlers.get(method);
     }
 }

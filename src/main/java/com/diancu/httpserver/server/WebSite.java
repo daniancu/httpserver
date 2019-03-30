@@ -3,6 +3,12 @@ package com.diancu.httpserver.server;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 @Slf4j
 public class WebSite {
@@ -28,5 +34,18 @@ public class WebSite {
 
         log.info("Resource '{}' not found");
         return null;
+    }
+
+    public boolean exists(String resource) {
+        log.debug("Checking if resource {} exists...", resource);
+        File file = new File(rootFolder, resource);
+        log.debug("Resource location is {}", file.getAbsolutePath());
+        return file.exists();
+    }
+
+    public long create(String resourceUri, InputStream inputStream) throws IOException {
+        Path file = new File(rootFolder, resourceUri).toPath();
+        log.debug("Creating resource {}...", file);
+        return Files.copy(inputStream, file, StandardCopyOption.REPLACE_EXISTING);
     }
 }

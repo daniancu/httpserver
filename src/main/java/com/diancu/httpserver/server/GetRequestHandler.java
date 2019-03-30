@@ -19,10 +19,10 @@ public class GetRequestHandler implements HttpRequestHandler {
     }
 
     @Override
-    public void handle(StatusLine statusLine, HttpHeaders headers, HttpOutputHandler outputHandler) throws IOException {
-        log.debug("Handling GET request: {}", statusLine);
+    public void handle(HttpInputHandler inputHandler, HttpOutputHandler outputHandler) throws IOException {
+        log.debug("Handling GET request: {}", inputHandler.getStatusLine());
 
-        WebResource resource = webSite.locate(statusLine.getResource());
+        WebResource resource = webSite.locate(inputHandler.getStatusLine().getResourceUri());
         if (resource != null) {
             outputHandler.writeStatusOk();
             outputHandler.writeHeaderServerAndDate();
@@ -37,7 +37,7 @@ public class GetRequestHandler implements HttpRequestHandler {
                 }
             }
         } else {
-            log.info("Resource not found: {}", statusLine.getResource());
+            log.info("Resource not found: {}", inputHandler.getStatusLine().getResourceUri());
             outputHandler.writeStatusNotFound().writeNewLine().flush();
         }
 

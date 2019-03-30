@@ -3,16 +3,22 @@ package com.diancu.httpserver.server;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.util.Map;
+
 @Slf4j
-public class HttpInputHandler implements Closeable {
-    private BufferedReader inReader;
+public class HttpInputHandler  {
+    private final InputStream inputStream;
+    private final BufferedReader inReader;
+    //cached values
     private StatusLine statusLine;
+    private Map<String, String> httpHeaders;
 
     public HttpInputHandler(InputStream inputStream) {
         inReader = new BufferedReader(new InputStreamReader(inputStream));
+        this.inputStream = inputStream;
     }
 
-    public synchronized StatusLine readStatusLine() throws IOException, InvalidStatusLineException {
+    public synchronized StatusLine getStatusLine() throws IOException, InvalidStatusLineException {
         if (statusLine == null) {
             log.debug("Reading status line...");
             statusLine = new StatusLine(inReader.readLine());
@@ -21,12 +27,17 @@ public class HttpInputHandler implements Closeable {
         return statusLine;
     }
 
-    @Override
-    public void close() throws IOException {
-        inReader.close();
+    public synchronized Map<String, String> getHeaders() throws IOException {
+        getStatusLine();
+        if (httpHeaders != null) {
+
+        }
+        return httpHeaders;
     }
 
-    public HttpHeaders readHeaders() {
-        return null;
+    public InputStream getRequestBodyInputStream() throws IOException {
+        getStatusLine();
+        getHeaders();
+        return inputStream;
     }
 }

@@ -2,43 +2,32 @@ package com.diancu.httpserver.server;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.Closeable;
 import java.io.IOException;
-import java.net.Socket;
 
 @Slf4j
-public class HttpConnectionHandler implements Closeable, Runnable {
-    private final Socket socket;
+public class HttpConnectionHandler implements Runnable {
+    private final HttpInputHandler httpReader;
+    private final HttpOutputHandler outputHandler;
+
     private final HttpHandlers handlers;
 
-    public HttpConnectionHandler(Socket socket, HttpHandlers handlers) {
-        this.socket = socket;
+    public HttpConnectionHandler(HttpInputHandler httpReader, HttpOutputHandler outputHandler , HttpHandlers handlers) {
+        this.httpReader = httpReader;
+        this.outputHandler = outputHandler;
         this.handlers = handlers;
-    }
-
-    @Override
-    public void close() throws IOException {
-        log.debug("Closing connection with {}...", socket.getRemoteSocketAddress());
-        socket.close();
     }
 
     @Override
     public void run() {
         log.info("Handling new connection...");
-        HttpInputHandler httpReader;
-        HttpOutputHandler outputHandler = null;
 
         try {
-            httpReader = new HttpInputHandler(socket.getInputStream());
-            outputHandler = new HttpOutputHandler(socket.getOutputStream());
-            StatusLine statusLine = httpReader.readStatusLine();
-            log.debug("statusLine: {}", statusLine);
-            HttpHeaders headers = httpReader.readHeaders();
+            StatusLine statusLine = httpReader.getStatusLine();
 
             HttpRequestHandler handler = handlers.getHandler(statusLine.getMethod());
 
             if (handler != null) {
-                handler.handle(statusLine, headers, outputHandler);
+                handler.handle(httpReader, outputHandler);
             } else {
                 //this method is not supported yet
                 log.debug("Method {} not supported", statusLine.getMethod());
@@ -52,12 +41,6 @@ public class HttpConnectionHandler implements Closeable, Runnable {
         } catch (RuntimeException e) {
             log.error("Error processing http request", e);
             outputHandler.writeStatusInternalError().writeNewLine().flush();
-        } finally {
-            try {
-                close();
-            } catch (IOException e) {
-                log.error("error closing connection", e);
-            }
         }
     }
 }

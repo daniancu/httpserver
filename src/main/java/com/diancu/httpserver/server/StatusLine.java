@@ -24,7 +24,7 @@ public class StatusLine {
         return fields[0];
     }
 
-    public String getResource() {
+    public String getResourceUri() {
         return fields[1];
     }
 

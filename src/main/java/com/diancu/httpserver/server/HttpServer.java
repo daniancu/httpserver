@@ -52,13 +52,25 @@ public class HttpServer {
                     log.info("New connection from {}", socket.getRemoteSocketAddress());
 
                     //use a thread from conn pool to handle this connection
-                    CompletableFuture.runAsync(new HttpConnectionHandler(socket, handlers), executor);
+                    HttpInputHandler httpInputHandler = new HttpInputHandler(socket.getInputStream());
+                    HttpOutputHandler httpOutputHandler = new HttpOutputHandler(socket.getOutputStream());
+                    HttpConnectionHandler runnable = new HttpConnectionHandler(httpInputHandler, httpOutputHandler, handlers);
+                    CompletableFuture.runAsync(runnable, executor).thenRun( () -> closeSocket(socket));
                 }
                 log.info("Shutting down ...");
             } catch (IOException e) {
                 log.error("Server error", e);
             }
         });
+    }
+
+    private void closeSocket(Socket socket) {
+        log.debug("Closing socket to {}...", socket.getRemoteSocketAddress());
+        try {
+            socket.close();
+        } catch (IOException e) {
+            log.error("Could not close socket", e);
+        }
     }
 
     public void stop() {

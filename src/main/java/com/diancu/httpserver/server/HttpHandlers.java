@@ -10,6 +10,7 @@ public class HttpHandlers {
         this.methodHandlers = new HashMap<>();
         methodHandlers.put("GET", new GetRequestHandler(webSite));
         methodHandlers.put("HEAD", new GetRequestHandler(webSite, false));
+        methodHandlers.put("PUT", new PutRequestHandler(webSite));
     }
 
     public HttpRequestHandler getHandler(String method) {

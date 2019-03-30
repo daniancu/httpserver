@@ -1,9 +1,6 @@
-package com.diancu.httpserver;
+package com.diancu.httpserver.server;
 
 
-import com.diancu.httpserver.server.HttpServer;
-import com.diancu.httpserver.server.HttpHeaders;
-import com.diancu.httpserver.server.ServerConfiguration;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,6 +57,14 @@ public class HttpServerIT {
 
     @Test
     public void testSendBAdStatusLineReturns400() throws IOException {
+        /*URL url = new URL("http", config.getServerHost(), config.getServerPort(), "test.txt");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("PUT");
+
+        PrintWriter pw = new PrintWriter(con.getOutputStream());
+        pw.print("testing testing");
+        pw.close();
+        con.disconnect();*/
 
     }
 

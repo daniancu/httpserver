@@ -1,6 +1,9 @@
 package com.diancu.httpserver;
 
 
+import com.diancu.httpserver.server.HttpServer;
+import com.diancu.httpserver.server.HttpHeaders;
+import com.diancu.httpserver.server.ServerConfiguration;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,10 +16,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public class DemoHttpServerIT {
+public class HttpServerIT {
 
     private ServerConfiguration config;
-    private DemoHttpServer server;
+    private HttpServer server;
     private File index;
     private Path tempRoot;
     private CompletableFuture<Void> serverHandler;
@@ -25,7 +28,7 @@ public class DemoHttpServerIT {
     public void setup() throws IOException, InterruptedException {
         tempRoot = Files.createTempDirectory("httpsrv");
         config = new ServerConfiguration(tempRoot.toFile());
-        server = new DemoHttpServer(config);
+        server = new HttpServer(config);
         server.start();
         Thread.sleep(1000);
     }

@@ -1,4 +1,4 @@
-package com.diancu.httpserver;
+package com.diancu.httpserver.server;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public class DemoHttpServer {
+public class HttpServer {
     private final ServerConfiguration config;
     private final AtomicInteger threadCount = new AtomicInteger(0);
     private final HttpHandlers handlers;
@@ -23,13 +23,13 @@ public class DemoHttpServer {
     private AtomicBoolean active = new AtomicBoolean(true);
     private ServerSocket serverSocket;
 
-    public DemoHttpServer(ServerConfiguration config, HttpHandlers handlers, ExecutorService executor) {
+    public HttpServer(ServerConfiguration config, HttpHandlers handlers, ExecutorService executor) {
         this.config = config;
         this.handlers = handlers;
         this.executor = executor;
     }
 
-    public DemoHttpServer(ServerConfiguration config) {
+    public HttpServer(ServerConfiguration config) {
         this.config = config;
         this.executor = Executors.newFixedThreadPool(config.getWorkerThreads(),  r -> {
             Thread t = new Thread(r);
@@ -74,21 +74,4 @@ public class DemoHttpServer {
     }
 
 
-    public static void main(String[] args) {
-        log.info("Starting http server...");
-        try {
-            URL embeddedSiteLocation = DemoHttpServer.class.getClassLoader().getResource("site");
-            if (embeddedSiteLocation != null) {
-
-                ServerConfiguration config = new ServerConfiguration(new File(embeddedSiteLocation.getPath()));
-
-                new DemoHttpServer(config).start().join();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
 }

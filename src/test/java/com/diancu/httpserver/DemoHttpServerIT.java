@@ -36,6 +36,32 @@ public class DemoHttpServerIT {
     }
 
     @Test
+    public void testUnsupportedMethod() throws IOException {
+        URL url = new URL("http", config.getServerHost(), config.getServerPort(), "/");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("OPTIONS");
+
+        Assert.assertEquals("status code error", 501, con.getResponseCode());
+        con.disconnect();
+    }
+
+    @Test
+    public void testGETMissingResourceReturns404() throws IOException {
+        URL url = new URL("http", config.getServerHost(), config.getServerPort(), "missing.html");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        Assert.assertEquals("status code error", 404, con.getResponseCode());
+        con.disconnect();
+    }
+
+    @Test
+    public void testSendBAdStatusLineReturns400() throws IOException {
+
+    }
+
+
+    @Test
     public void testGetMethod() throws IOException {
 
         index = new File(tempRoot.toFile(), "index.html");

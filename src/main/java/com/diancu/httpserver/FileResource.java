@@ -1,9 +1,6 @@
 package com.diancu.httpserver;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,11 +20,6 @@ public class FileResource implements WebResource {
     @Override
     public long getSize() {
         return sourceFile.length();
-    }
-
-    @Override
-    public InputStream getInputStream() throws FileNotFoundException {
-        return new FileInputStream(sourceFile);
     }
 
     @Override

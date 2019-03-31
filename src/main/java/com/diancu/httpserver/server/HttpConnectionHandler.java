@@ -35,7 +35,7 @@ public class HttpConnectionHandler implements Runnable {
             }
         } catch (IOException e) {
             log.error("Connection error", e);
-        } catch (InvalidStatusLineException e) {
+        } catch (InvalidStatusLineException | InvalidHeaderException e) {
             //bad request
             outputHandler.writeStatusBadRequest().writeNewLine().flush();
         } catch (RuntimeException e) {

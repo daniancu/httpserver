@@ -2,7 +2,10 @@ package com.diancu.httpserver.server;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Slf4j
 public class PutRequestHandler implements HttpRequestHandler {
@@ -18,12 +21,24 @@ public class PutRequestHandler implements HttpRequestHandler {
 
         String resourceUri = inputHandler.getStatusLine().getResourceUri();
 
-        webSite.create(resourceUri, inputHandler.getRequestBodyInputStream());
+        File tmpFile =  File.createTempFile(resourceUri, "");
 
-        outputHandler.writeStatusCreated()
-                .writeHeaderServerAndDate()
-                .writeNewLine()
-                .flush();
+        FileOutputStream outputStream = new FileOutputStream(tmpFile);
+        inputHandler.writeRequestBody(outputStream);
+        outputStream.close();
+
+        if (webSite.create(resourceUri, tmpFile)) {
+            outputHandler.writeStatusCreated()
+                    .writeHeaderServerAndDate()
+                    .writeNewLine()
+                    .flush();
+        } else {
+            outputHandler.writeStatusInternalError()
+                    .writeHeaderServerAndDate()
+                    .writeNewLine()
+                    .flush();
+        }
 
     }
+
 }

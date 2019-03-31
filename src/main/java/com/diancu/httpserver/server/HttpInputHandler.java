@@ -1,43 +1,96 @@
 package com.diancu.httpserver.server;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 public class HttpInputHandler  {
-    private final InputStream inputStream;
-    private final BufferedReader inReader;
+    private final InputStream bufferedInputStream;
+
     //cached values
     private StatusLine statusLine;
     private Map<String, String> httpHeaders;
+    private final InputStreamReader inputStreamReader;
+
 
     public HttpInputHandler(InputStream inputStream) {
-        inReader = new BufferedReader(new InputStreamReader(inputStream));
-        this.inputStream = inputStream;
+        this.bufferedInputStream = new BufferedInputStream(inputStream);
+        inputStreamReader = new InputStreamReader(inputStream);
     }
 
     public synchronized StatusLine getStatusLine() throws IOException, InvalidStatusLineException {
         if (statusLine == null) {
             log.debug("Reading status line...");
-            statusLine = new StatusLine(inReader.readLine());
+            String line = nextLine();
+            log.debug("status line: {}", line);
+            statusLine = new StatusLine(line);
             log.debug("statusLine='{}'", statusLine);
         }
         return statusLine;
+
     }
 
-    public synchronized Map<String, String> getHeaders() throws IOException {
+    private synchronized Map<String, String> getHeaders() throws IOException {
         getStatusLine();
-        if (httpHeaders != null) {
-
+        if (httpHeaders == null) {
+            httpHeaders = new HashMap<>();
+            String line = nextLine();
+            int separatorIndex = 0;
+            while (!"\r".equals(line)) {
+                separatorIndex = line.indexOf(':');
+                if (separatorIndex < 0) {
+                    throw new InvalidHeaderException(line);
+                }
+                else {
+                    httpHeaders.put(line.substring(0, separatorIndex).toLowerCase(), line.substring(separatorIndex+1).trim());
+                }
+                line = nextLine();
+            }
         }
         return httpHeaders;
     }
 
-    public InputStream getRequestBodyInputStream() throws IOException {
-        getStatusLine();
-        getHeaders();
-        return inputStream;
+
+    private String nextLine() throws IOException {
+        ByteArrayOutputStream buff = new ByteArrayOutputStream();
+
+        int nextChar  = inputStreamReader.read();
+        while (nextChar > 0 && nextChar != '\n') {
+            buff.write(nextChar);
+            nextChar  = inputStreamReader.read();
+        }
+        String nextLine = buff.toString();
+        log.debug("nextLine: {}", nextLine);
+        return nextLine;
+    }
+
+    public void writeRequestBody(OutputStream outputStream) throws IOException {
+        log.debug("Writing body...");
+        String contentLength = getHeader(HttpHeaders.CONTENT_LENGTH);
+        log.debug("contentLength: {}", contentLength);
+        int remaining = Integer.parseInt(contentLength);
+        ByteArrayOutputStream buffStream = new ByteArrayOutputStream();
+        while (remaining > 0) {
+            buffStream.write(inputStreamReader.read());
+            remaining--;
+        }
+        buffStream.writeTo(outputStream);
+        buffStream.close();
+    }
+
+    void debugToOutput() throws IOException {
+        log.debug("Http request ----");
+        System.out.println(getStatusLine());
+        System.out.println(getHeaders());
+        writeRequestBody(System.out);
+        log.debug("End request ----");
+    }
+
+    public String getHeader(String name) throws IOException {
+        return getHeaders().get(name.toLowerCase());
     }
 }

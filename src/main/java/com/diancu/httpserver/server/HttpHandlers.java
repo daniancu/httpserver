@@ -11,6 +11,7 @@ public class HttpHandlers {
         methodHandlers.put("GET", new GetRequestHandler(webSite));
         methodHandlers.put("HEAD", new GetRequestHandler(webSite, false));
         methodHandlers.put("PUT", new PutRequestHandler(webSite));
+//        methodHandlers.put("PUT", new DebugRequestHandler(webSite));
     }
 
     public HttpRequestHandler getHandler(String method) {

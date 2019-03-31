@@ -23,6 +23,7 @@
         <junit.version>4.12</junit.version>
         <httpclient.version>4.5.7</httpclient.version>
         <lombok.version>1.16.16</lombok.version>
+        <commons-io.version>2.6</commons-io.version>
     </properties>
     <build>
         <plugins>
@@ -71,6 +72,12 @@
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
         </dependency>
 
 

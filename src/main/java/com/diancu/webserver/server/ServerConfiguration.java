@@ -1,7 +1,7 @@
-package com.diancu.httpserver.server;
+package com.diancu.webserver.server;
 
-import com.diancu.httpserver.http.HttpConfiguration;
-import com.diancu.httpserver.website.WebSiteConfiguration;
+import com.diancu.webserver.http.HttpConfiguration;
+import com.diancu.webserver.website.WebSiteConfiguration;
 import lombok.Data;
 
 /**

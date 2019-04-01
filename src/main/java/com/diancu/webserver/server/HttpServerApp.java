@@ -1,11 +1,10 @@
-package com.diancu.httpserver.server;
+package com.diancu.webserver.server;
 
-import com.diancu.httpserver.http.HttpHandlers;
-import com.diancu.httpserver.http.HttpServer;
-import com.diancu.httpserver.website.WebSite;
+import com.diancu.webserver.http.HttpHandlers;
+import com.diancu.webserver.http.HttpServer;
+import com.diancu.webserver.website.WebSite;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

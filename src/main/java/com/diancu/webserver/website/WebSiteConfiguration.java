@@ -1,4 +1,4 @@
-package com.diancu.httpserver.website;
+package com.diancu.webserver.website;
 
 public interface WebSiteConfiguration {
 

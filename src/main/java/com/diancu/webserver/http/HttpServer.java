@@ -1,7 +1,6 @@
-package com.diancu.httpserver.http;
+package com.diancu.webserver.http;
 
 
-import com.diancu.httpserver.website.WebSite;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -9,9 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class HttpServer {

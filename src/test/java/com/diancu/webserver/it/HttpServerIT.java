@@ -1,11 +1,11 @@
-package com.diancu.httpserver.it;
+package com.diancu.webserver.it;
 
 
-import com.diancu.httpserver.http.HttpHandlers;
-import com.diancu.httpserver.server.ServerConfiguration;
-import com.diancu.httpserver.http.HttpHeaders;
-import com.diancu.httpserver.http.HttpServer;
-import com.diancu.httpserver.website.WebSite;
+import com.diancu.webserver.http.HttpHandlers;
+import com.diancu.webserver.server.ServerConfiguration;
+import com.diancu.webserver.http.HttpHeaders;
+import com.diancu.webserver.http.HttpServer;
+import com.diancu.webserver.website.WebSite;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,7 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

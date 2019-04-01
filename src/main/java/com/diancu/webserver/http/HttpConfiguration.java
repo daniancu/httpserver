@@ -1,6 +1,4 @@
-package com.diancu.httpserver.http;
-
-import java.io.File;
+package com.diancu.webserver.http;
 
 public interface HttpConfiguration {
     int getWorkerThreads();

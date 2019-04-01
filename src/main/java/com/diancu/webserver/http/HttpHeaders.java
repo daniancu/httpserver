@@ -1,4 +1,4 @@
-package com.diancu.httpserver.http;
+package com.diancu.webserver.http;
 
 public class HttpHeaders {
     public static String CONTENT_TYPE = "Content-type";

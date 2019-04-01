@@ -2,8 +2,7 @@ package com.diancu.httpserver.server;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
-import java.nio.file.Files;
+import java.io.IOException;
 
 @Slf4j
 public class DebugRequestHandler implements HttpRequestHandler {

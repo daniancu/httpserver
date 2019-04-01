@@ -10,10 +10,10 @@ public class HttpInputHandlerTest {
 
     @Test
     public void test() throws IOException {
-        ByteArrayOutputStream message = new ByteArrayOutputStream();
-        PrintWriter sw = new PrintWriter(message);
         String bodyText = "Some body text";
         int bodyLength = bodyText.getBytes().length;
+        ByteArrayOutputStream message = new ByteArrayOutputStream();
+        PrintWriter sw = new PrintWriter(message);
 
         sw.println("PUT /test.html HTTP/1.1");
         sw.println("Content-type: text/html");

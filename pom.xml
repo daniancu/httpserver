@@ -3,14 +3,6 @@
     <!-- POM Model Version -->
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Parent/SuperPom Information -->
-    <!-- Anything between the <parent></parent> tags is not expandable (so no properties allowed) -->
-    <parent>
-        <groupId>com.ea.fos.common.maven</groupId>
-        <artifactId>parentpom</artifactId>
-        <version>2.03.18-SNAPSHOT</version>
-    </parent>
-
     <!-- Application Information -->
     <groupId>com.daiancu.httpserver</groupId>
     <artifactId>httpserver</artifactId>

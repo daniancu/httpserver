@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,7 +66,6 @@ public class HttpServerIT {
         pw.print("testing testing");
         pw.close();
         con.disconnect();*/
-
     }
 
 
@@ -98,6 +98,31 @@ public class HttpServerIT {
         Assert.assertEquals("file content error", token, content.toString());
 
         con.disconnect();
+
+    }
+
+    @Test
+    public void testPutMethod() throws IOException {
+        String uri = "/sayHello.html";
+        String body = "hello world";
+        URL url = new URL("http://localhost" + uri);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("PUT");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "text/html");
+
+        OutputStreamWriter osw = new OutputStreamWriter(connection.getOutputStream());
+        osw.write(body);
+        osw.close();
+
+        Assert.assertEquals(201, connection.getResponseCode());
+        connection.disconnect();
+
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("HEAD");
+        Assert.assertEquals(200, connection.getResponseCode());
+        System.out.println( connection.getRequestProperties());
 
     }
 

@@ -1,6 +1,5 @@
 package com.diancu.httpserver.server;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -9,17 +8,19 @@ import java.util.Map;
 
 @Slf4j
 public class HttpInputHandler  {
-    private final InputStream bufferedInputStream;
 
+    private final InputStreamReader inputStreamReader;
     //cached values
     private StatusLine statusLine;
     private Map<String, String> httpHeaders;
-    private final InputStreamReader inputStreamReader;
 
 
     public HttpInputHandler(InputStream inputStream) {
-        this.bufferedInputStream = new BufferedInputStream(inputStream);
-        inputStreamReader = new InputStreamReader(inputStream);
+        if (inputStream instanceof BufferedInputStream) {
+            inputStreamReader = new InputStreamReader(inputStream);
+        } else {
+            inputStreamReader = new InputStreamReader(new BufferedInputStream(inputStream));
+        }
     }
 
     public synchronized StatusLine getStatusLine() throws IOException, InvalidStatusLineException {
@@ -31,7 +32,6 @@ public class HttpInputHandler  {
             log.debug("statusLine='{}'", statusLine);
         }
         return statusLine;
-
     }
 
     private synchronized Map<String, String> getHeaders() throws IOException {

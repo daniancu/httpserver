@@ -3,8 +3,6 @@ package com.diancu.httpserver.server;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.net.URL;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

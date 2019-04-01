@@ -1,12 +1,9 @@
 package com.diancu.httpserver;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
 import java.util.Random;
 
 public class HttpClientApp {

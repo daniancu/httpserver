@@ -3,7 +3,6 @@ package com.diancu.httpserver.server;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.IOException;
 
 @Slf4j
 public class WebSite {

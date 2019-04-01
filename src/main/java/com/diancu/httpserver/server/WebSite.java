@@ -3,6 +3,8 @@ package com.diancu.httpserver.server;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 @Slf4j
 public class WebSite {
@@ -42,5 +44,14 @@ public class WebSite {
         log.debug("Creating resource {}...", file);
         return externalFile.renameTo(file);
 
+    }
+
+    public boolean delete(String resourceUri) throws IOException {
+        WebResource res = locate(resourceUri);
+        if (res.isFolder()) {
+            return false;
+        } else {
+             return Files.deleteIfExists(res.getPath());
+        }
     }
 }

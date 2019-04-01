@@ -122,7 +122,7 @@ public class HttpServerIT {
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("HEAD");
         Assert.assertEquals(200, connection.getResponseCode());
-        System.out.println( connection.getRequestProperties());
+        Assert.assertEquals(String.valueOf(body.getBytes().length), connection.getHeaderFields().get("Content-length").get(0));
 
     }
 

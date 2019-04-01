@@ -9,4 +9,6 @@ public interface WebResource {
     long getSize();
 
     Path getPath();
+
+    boolean isFolder();
 }

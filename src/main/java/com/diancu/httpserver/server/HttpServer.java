@@ -48,11 +48,11 @@ public class HttpServer {
                 while (active.get()) {
                     Socket socket = serverSocket.accept();
                     log.info("New connection from {}", socket.getRemoteSocketAddress());
-                    socket.setSoTimeout(1000);
-                    //use a thread from conn pool to handle this connection
-                    HttpInputHandler httpInputHandler = new HttpInputHandler(socket.getInputStream());
+                    socket.setSoTimeout(config.getSoTimeout());
+                    HttpInputHandler httpInputHandler = new HttpInputHandler(socket.getInputStream(), config);
                     HttpOutputHandler httpOutputHandler = new HttpOutputHandler(socket.getOutputStream());
                     HttpConnectionHandler runnable = new HttpConnectionHandler(httpInputHandler, httpOutputHandler, handlers);
+                    //use a thread from conn pool to handle this connection
                     CompletableFuture.runAsync(runnable, executor).thenRun( () -> closeSocket(socket));
                 }
                 log.info("Shutting down ...");

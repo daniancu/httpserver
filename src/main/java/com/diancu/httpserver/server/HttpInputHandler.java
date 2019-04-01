@@ -10,12 +10,14 @@ import java.util.Map;
 public class HttpInputHandler  {
 
     private final InputStreamReader inputStreamReader;
+    private final ServerConfiguration config;
     //cached values
     private StatusLine statusLine;
     private Map<String, String> httpHeaders;
 
 
-    public HttpInputHandler(InputStream inputStream) {
+    public HttpInputHandler(InputStream inputStream, ServerConfiguration config) {
+        this.config = config;
         if (inputStream instanceof BufferedInputStream) {
             inputStreamReader = new InputStreamReader(inputStream);
         } else {
@@ -59,7 +61,12 @@ public class HttpInputHandler  {
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
 
         int nextChar  = inputStreamReader.read();
+        int lineLength = 0;
         while (nextChar > 0 && nextChar != '\n') {
+            lineLength++;
+            if (lineLength > config.getMaxStatusLineLength()) {
+                throw new InvalidStatusLineException("Status line exceeded " + config.getMaxStatusLineLength());
+            }
             buff.write(nextChar);
             nextChar  = inputStreamReader.read();
         }

@@ -1,4 +1,4 @@
-package com.diancu.httpserver.server;
+package com.diancu.httpserver.server.http;
 
 import java.util.Arrays;
 import java.util.Objects;

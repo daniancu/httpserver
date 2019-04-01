@@ -1,6 +1,9 @@
-package com.diancu.httpserver.server;
+package com.diancu.httpserver.server.it;
 
 
+import com.diancu.httpserver.server.server.ServerConfiguration;
+import com.diancu.httpserver.server.http.HttpHeaders;
+import com.diancu.httpserver.server.http.HttpServer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,7 +11,6 @@ import org.junit.Test;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;

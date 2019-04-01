@@ -1,4 +1,4 @@
-package com.diancu.httpserver.server;
+package com.diancu.httpserver.server.http;
 
 public class StatusCodes {
     public static final int BAD_REQUEST = 400;

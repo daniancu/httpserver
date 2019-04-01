@@ -1,5 +1,6 @@
-package com.diancu.httpserver.server;
+package com.diancu.httpserver.server.server;
 
+import com.diancu.httpserver.server.http.HttpConfiguration;
 import lombok.Data;
 
 import java.io.File;
@@ -8,7 +9,7 @@ import java.io.File;
  * Class that contains config server properties
  */
 @Data
-public class ServerConfiguration {
+public class ServerConfiguration implements HttpConfiguration {
 
     private String serverHost;
     private int serverPort;

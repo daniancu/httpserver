@@ -1,4 +1,4 @@
-package com.diancu.httpserver.server;
+package com.diancu.httpserver.server.website;
 
 import lombok.extern.slf4j.Slf4j;
 

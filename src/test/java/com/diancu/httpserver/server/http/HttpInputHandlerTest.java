@@ -1,5 +1,6 @@
-package com.diancu.httpserver.server;
+package com.diancu.httpserver.server.http;
 
+import com.diancu.httpserver.server.server.ServerConfiguration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class HttpInputHandlerTest {
         sw.println();
         sw.close();
         HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
-        Assert.assertEquals("GET", httpInputHandler.getStatusLine().getMethod());
+        httpInputHandler.getStatusLine().getMethod();
     }
 
     @Test (expected = InvalidStatusLineException.class)
@@ -61,7 +62,7 @@ public class HttpInputHandlerTest {
         sw.println();
         sw.close();
         HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
-        Assert.assertEquals("GET", httpInputHandler.getStatusLine().getMethod());
+        httpInputHandler.getStatusLine().getMethod();
     }
 
     @Test (expected = InvalidStatusLineException.class)
@@ -74,8 +75,7 @@ public class HttpInputHandlerTest {
         sw.println();
         sw.close();
         HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
-        Assert.assertEquals("GET", httpInputHandler.getStatusLine().getMethod());
-
+        httpInputHandler.getStatusLine().getMethod();
     }
 
     @Test (expected = InvalidHeaderException.class)
@@ -87,7 +87,7 @@ public class HttpInputHandlerTest {
         sw.println();
         sw.close();
         HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
-        Assert.assertEquals("GET", httpInputHandler.getHeader("content-type"));
+        httpInputHandler.getHeader("content-type");
     }
 
 }

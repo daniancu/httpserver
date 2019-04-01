@@ -1,7 +1,6 @@
-package com.diancu.httpserver;
+package com.diancu.httpserver.server.server;
 
-import com.diancu.httpserver.server.HttpServer;
-import com.diancu.httpserver.server.ServerConfiguration;
+import com.diancu.httpserver.server.http.HttpServer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;

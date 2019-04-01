@@ -1,4 +1,4 @@
-package com.diancu.httpserver.server;
+package com.diancu.httpserver.server.http;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,13 +10,13 @@ import java.util.Map;
 public class HttpInputHandler  {
 
     private final InputStreamReader inputStreamReader;
-    private final ServerConfiguration config;
+    private final HttpConfiguration config;
     //cached values
     private StatusLine statusLine;
     private Map<String, String> httpHeaders;
 
 
-    public HttpInputHandler(InputStream inputStream, ServerConfiguration config) {
+    public HttpInputHandler(InputStream inputStream, HttpConfiguration config) {
         this.config = config;
         if (inputStream instanceof BufferedInputStream) {
             inputStreamReader = new InputStreamReader(inputStream);

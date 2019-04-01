@@ -1,9 +1,11 @@
-package com.diancu.httpserver.server.it;
+package com.diancu.httpserver.it;
 
 
-import com.diancu.httpserver.server.server.ServerConfiguration;
-import com.diancu.httpserver.server.http.HttpHeaders;
-import com.diancu.httpserver.server.http.HttpServer;
+import com.diancu.httpserver.http.HttpHandlers;
+import com.diancu.httpserver.server.ServerConfiguration;
+import com.diancu.httpserver.http.HttpHeaders;
+import com.diancu.httpserver.http.HttpServer;
+import com.diancu.httpserver.website.WebSite;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +17,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class HttpServerIT {
 
@@ -22,14 +26,17 @@ public class HttpServerIT {
     private HttpServer server;
     private File index;
     private Path tempRoot;
-    private CompletableFuture<Void> serverHandler;
 
     @Before
     public void setup() throws IOException, InterruptedException {
         tempRoot = Files.createTempDirectory("httpsrv");
-        config = new ServerConfiguration(tempRoot.toFile());
-        server = new HttpServer(config);
+        config = new ServerConfiguration(tempRoot.toFile().getPath());
+        WebSite website = new WebSite(config);
+        HttpHandlers handlers = new HttpHandlers(website);
+        ExecutorService executor = Executors.newFixedThreadPool(config.getWorkerThreads());
+        server = new HttpServer(config, handlers, executor);
         server.start();
+        //todo: need better way to wait until server is ready
         Thread.sleep(1000);
     }
 

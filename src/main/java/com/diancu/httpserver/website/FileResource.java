@@ -1,4 +1,4 @@
-package com.diancu.httpserver.server.website;
+package com.diancu.httpserver.website;
 
 import java.io.File;
 import java.nio.file.Path;

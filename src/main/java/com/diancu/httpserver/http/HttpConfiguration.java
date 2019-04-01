@@ -1,11 +1,9 @@
-package com.diancu.httpserver.server.http;
+package com.diancu.httpserver.http;
 
 import java.io.File;
 
 public interface HttpConfiguration {
     int getWorkerThreads();
-
-    File getRootFolder();
 
     int getServerPort();
 

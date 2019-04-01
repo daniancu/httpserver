@@ -1,4 +1,4 @@
-package com.diancu.httpserver.server.client;
+package com.diancu.httpclient;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

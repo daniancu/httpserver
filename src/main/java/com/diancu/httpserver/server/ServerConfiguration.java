@@ -1,27 +1,26 @@
-package com.diancu.httpserver.server.server;
+package com.diancu.httpserver.server;
 
-import com.diancu.httpserver.server.http.HttpConfiguration;
+import com.diancu.httpserver.http.HttpConfiguration;
+import com.diancu.httpserver.website.WebSiteConfiguration;
 import lombok.Data;
-
-import java.io.File;
 
 /**
  * Class that contains config server properties
  */
 @Data
-public class ServerConfiguration implements HttpConfiguration {
+public class ServerConfiguration implements HttpConfiguration, WebSiteConfiguration {
 
     private String serverHost;
     private int serverPort;
-    private File rootFolder;
+    private String rootFolderPath;
     private int workerThreads;
     private int maxStatusLineLength;
     private int soTimeout;
 
-    public ServerConfiguration(File serverRoot) {
+    public ServerConfiguration(String serverRoot) {
         serverHost = "localhost";
         serverPort = 80;
-        rootFolder = serverRoot;
+        rootFolderPath = serverRoot;
         workerThreads = 30;
         maxStatusLineLength = 300;
         soTimeout = 0;

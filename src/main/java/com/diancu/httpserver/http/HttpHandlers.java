@@ -1,6 +1,6 @@
-package com.diancu.httpserver.server.http;
+package com.diancu.httpserver.http;
 
-import com.diancu.httpserver.server.website.WebSite;
+import com.diancu.httpserver.website.WebSite;
 
 import java.util.HashMap;
 import java.util.Map;

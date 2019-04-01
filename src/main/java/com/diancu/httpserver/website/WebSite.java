@@ -1,4 +1,4 @@
-package com.diancu.httpserver.server.website;
+package com.diancu.httpserver.website;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,11 +11,12 @@ public class WebSite {
 
     private final File rootFolder;
 
-    public WebSite(File rootFolder) {
-        if (rootFolder != null && rootFolder.isDirectory()) {
-            this.rootFolder = rootFolder;
+    public WebSite(WebSiteConfiguration configuration) {
+        File folder = new File(configuration.getRootFolderPath());
+        if (folder.isDirectory()) {
+            this.rootFolder = folder;
         } else {
-            throw new IllegalArgumentException("Root folders is not a directory: " + rootFolder);
+            throw new IllegalArgumentException("Root folders is not a directory: " + configuration.getRootFolderPath());
         }
     }
 

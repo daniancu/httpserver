@@ -1,6 +1,6 @@
-package com.diancu.httpserver.server.http;
+package com.diancu.httpserver.http;
 
-import com.diancu.httpserver.server.server.ServerConfiguration;
+import com.diancu.httpserver.server.ServerConfiguration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

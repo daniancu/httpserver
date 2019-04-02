@@ -14,9 +14,10 @@ public class WebSite {
     public WebSite(WebSiteConfiguration configuration) {
         File folder = new File(configuration.getRootFolderPath());
         if (folder.isDirectory()) {
+            log.info("Website root folder is {}", folder);
             this.rootFolder = folder;
         } else {
-            throw new IllegalArgumentException("Root folders is not a directory: " + configuration.getRootFolderPath());
+            throw new IllegalArgumentException("Root folder is not a directory: " + configuration.getRootFolderPath());
         }
     }
 
@@ -25,7 +26,7 @@ public class WebSite {
         File requestedFile = new File(rootFolder, resource);
         log.debug("requestedFile: {}", requestedFile);
 
-        if (requestedFile.exists() && requestedFile.isFile()) {
+        if (requestedFile.exists()) {
             return new FileResource(requestedFile);
         }
 

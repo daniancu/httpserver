@@ -22,12 +22,12 @@ public class DeleteRequestHandler implements HttpRequestHandler {
 
         if (webSite.delete(resourceUri)) {
             outputHandler.writeStatusCreated()
-                    .writeHeaderServerAndDate()
+                    .writeCommonHeaders()
                     .writeNewLine()
                     .flush();
         } else {
             outputHandler.writeStatusInternalError()
-                    .writeHeaderServerAndDate()
+                    .writeCommonHeaders()
                     .writeNewLine()
                     .flush();
         }

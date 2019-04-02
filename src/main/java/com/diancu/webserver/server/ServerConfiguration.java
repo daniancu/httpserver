@@ -19,7 +19,7 @@ public class ServerConfiguration implements HttpConfiguration, WebSiteConfigurat
 
     public ServerConfiguration(String serverRoot) {
         serverHost = "localhost";
-        serverPort = 80;
+        serverPort = 8001;
         rootFolderPath = serverRoot;
         workerThreads = 30;
         maxStatusLineLength = 300;

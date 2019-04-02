@@ -28,7 +28,7 @@ public class HttpServerApp {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Http server error", e);
         }
 
 
@@ -38,7 +38,7 @@ public class HttpServerApp {
         AtomicInteger threadCount = new AtomicInteger(0);
         return Executors.newFixedThreadPool(config.getWorkerThreads(), r -> {
             Thread t = new Thread(r);
-            t.setName("DemoHttpServerThread-" + threadCount.incrementAndGet());
+            t.setName("HttpServerThread-" + threadCount.incrementAndGet());
             return t;
         });
     }

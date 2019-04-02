@@ -1,8 +1,10 @@
 package com.diancu.webserver.http;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -59,15 +61,17 @@ public class HttpOutputHandler {
     }
 
     public HttpOutputHandler writeHeader(String headerName, String headerValue) {
+        log.debug("Write header: {} -> {}", headerName, headerValue);
         writer.print(headerName);
         writer.print(": ");
         writer.println(headerValue);
         return this;
     }
 
-    public HttpOutputHandler writeHeaderServerAndDate() {
-        writeHeader("Server", "HttpDemoServer 1.0");
-        writeHeader("Date", String.valueOf(new Date()));
+    public HttpOutputHandler writeCommonHeaders() {
+        writeHeader(HttpHeaders.SERVER, "HttpDemoServer 1.0");
+        writeHeader(HttpHeaders.DATE, String.valueOf(new Date()));
+        writeHeader(HttpHeaders.CONNECTION, "close");
         return this;
     }
 
@@ -75,4 +79,8 @@ public class HttpOutputHandler {
         Files.copy(path, outputStream);
     }
 
+    public void writeFrom(InputStream inputStream) throws IOException {
+        IOUtils.copy(inputStream, outputStream);
+        inputStream.close();
+    }
 }

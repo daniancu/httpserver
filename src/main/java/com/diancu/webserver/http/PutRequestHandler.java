@@ -29,12 +29,12 @@ public class PutRequestHandler implements HttpRequestHandler {
 
         if (webSite.create(resourceUri, tmpFile)) {
             outputHandler.writeStatusCreated()
-                    .writeHeaderServerAndDate()
+                    .writeCommonHeaders()
                     .writeNewLine()
                     .flush();
         } else {
             outputHandler.writeStatusInternalError()
-                    .writeHeaderServerAndDate()
+                    .writeCommonHeaders()
                     .writeNewLine()
                     .flush();
         }

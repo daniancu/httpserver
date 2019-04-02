@@ -24,16 +24,6 @@ public class HttpServer {
         this.executor = executor;
     }
 
-    /*public HttpServer(HttpConfiguration config) {
-        this.config = config;
-        this.executor = Executors.newFixedThreadPool(config.getWorkerThreads(),  r -> {
-            Thread t = new Thread(r);
-            t.setName("DemoHttpServerThread-" + threadCount.incrementAndGet());
-            return t;
-        });
-        handlers = new HttpHandlers(new WebSite(config.getRootFolder()));
-    }*/
-
     public CompletableFuture<Void> start() {
         return CompletableFuture.runAsync(() -> {
             log.info("Starting http server...");

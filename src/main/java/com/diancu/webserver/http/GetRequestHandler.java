@@ -9,7 +9,7 @@ import java.io.IOException;
 @Slf4j
 public class GetRequestHandler implements HttpRequestHandler {
     private final WebSite webSite;
-    private final boolean sendBody;
+    private final boolean sendBody;//true for GET, false for HEAD
 
     public GetRequestHandler(WebSite webSite) {
         this (webSite, true);
@@ -27,13 +27,13 @@ public class GetRequestHandler implements HttpRequestHandler {
         WebResource resource = webSite.locate(inputHandler.getStatusLine().getResourceUri());
         if (resource != null) {
             outputHandler.writeStatusOk();
-            outputHandler.writeHeaderServerAndDate();
+            outputHandler.writeCommonHeaders();
             outputHandler.writeHeader(HttpHeaders.CONTENT_TYPE, resource.getContentType());
             outputHandler.writeHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.getSize()));
             outputHandler.writeNewLine().flush();
-            if (sendBody) {
+            if (sendBody) {//HEAD command does not send body
                 try {
-                    outputHandler.writeFromPath(resource.getPath());
+                    outputHandler.writeFrom(resource.getInputStream());
                 } finally {
                     outputHandler.flush();
                 }

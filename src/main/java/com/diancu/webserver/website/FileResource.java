@@ -3,23 +3,12 @@ package com.diancu.webserver.website;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class FileResource implements WebResource {
-    private static Map<String, String> contentTypes = new HashMap<>();
-
-    static {
-        contentTypes.put("txt", "text/plain");
-        contentTypes.put("html", "text/html");
-        contentTypes.put("jpg", "image/jpeg");
-        contentTypes.put("png", "image/png");
-    }
 
     private final File sourceFile;
     private final boolean isRoot;
@@ -78,11 +67,12 @@ public class FileResource implements WebResource {
         PrintWriter pw = new PrintWriter(outputStream);
         pw.println("<html><body>");
         pw.println("<h1>" + folderName() + "</h1>");
-        pw.println("<a href='../'>..</a>");
+        pw.println(isRoot ? ".." :  "<a href='../'>..</a>");
         if (content != null && content.length > 0) {
             pw.println("<table>");
             StringBuffer folderRows = new StringBuffer();
             StringBuffer fileRows = new StringBuffer();
+            //check folder content and generate separately table rows for folders and files
             for (File file : content) {
                 if (file.isDirectory()) {
                     folderRows.append("<tr><td><a href='").append(file.getName()).append("/'>").append(file.getName()).append("</a></td></tr>");
@@ -91,7 +81,7 @@ public class FileResource implements WebResource {
                     fileRows.append("<tr><td><a href='").append(file.getName()).append("'>").append(file.getName()).append("</a></td></tr>");
                 }
             }
-            //folders should be first in the list when browsing directory
+            //add folders rows first, then file rows
             pw.println(folderRows);
             pw.println(fileRows);
             pw.println("</table>");

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -31,10 +32,13 @@ public class FileResource implements WebResource {
 
     @Override
     public String getContentType() {
-        return isFolder() ? "text/html"
-            : contentTypes.getOrDefault (
-                    sourceFile.getName().substring(sourceFile.getName().lastIndexOf('.') + 1),
-        "application/octetstream");
+        try {
+            return isFolder() ? "text/html"
+                : Files.probeContentType(sourceFile.toPath());
+        } catch (IOException e) {
+            log.error("error getting content type for file: {}", sourceFile);
+            return "application/octetstream";
+        }
     }
 
     @Override

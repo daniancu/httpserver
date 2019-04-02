@@ -3,6 +3,7 @@ package com.diancu.webserver.http;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +20,9 @@ public class HttpInputHandler  {
     public HttpInputHandler(InputStream inputStream, HttpConfiguration config) {
         this.config = config;
         if (inputStream instanceof BufferedInputStream) {
-            inputStreamReader = new InputStreamReader(inputStream);
+            inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
         } else {
-            inputStreamReader = new InputStreamReader(new BufferedInputStream(inputStream));
+            inputStreamReader = new InputStreamReader(new BufferedInputStream(inputStream), Charset.forName("UTF-8"));
         }
     }
 
@@ -70,7 +71,7 @@ public class HttpInputHandler  {
             buff.write(nextChar);
             nextChar  = inputStreamReader.read();
         }
-        String nextLine = buff.toString();
+        String nextLine = buff.toString("UTF-8");
         log.debug("nextLine: {}", nextLine);
         return nextLine;
     }

@@ -13,11 +13,11 @@ public class WebSite {
 
     public WebSite(WebSiteConfiguration configuration) {
         File folder = new File(configuration.getRootFolderPath());
-        if (folder.isDirectory()) {
+        if (folder.exists() && folder.isDirectory()) {
             log.info("Website root folder is {}", folder);
             this.rootFolder = folder;
         } else {
-            throw new IllegalArgumentException("Root folder is not a directory: " + configuration.getRootFolderPath());
+            throw new IllegalArgumentException("Root folder path does not exist or not a directory: " + configuration.getRootFolderPath());
         }
     }
 
@@ -27,18 +27,13 @@ public class WebSite {
         log.debug("requestedFile: {}", requestedFile);
 
         if (requestedFile.exists()) {
-            return new FileResource(requestedFile, rootFolder.toPath().equals(requestedFile.toPath()));
+            return requestedFile.isDirectory()
+                    ? new FolderResource(requestedFile, rootFolder.toPath().equals(requestedFile.toPath()))
+                    : new FileResource(requestedFile);
         }
 
         log.info("Resource '{}' not found");
         return null;
-    }
-
-    public boolean exists(String resource) {
-        log.debug("Checking if resource {} exists...", resource);
-        File file = new File(rootFolder, resource);
-        log.debug("Resource location is {}", file.getAbsolutePath());
-        return file.exists();
     }
 
     public boolean create(String resourceUri, File externalFile) {

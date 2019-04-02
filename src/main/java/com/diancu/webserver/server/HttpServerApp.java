@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class HttpServerApp {
+
     public static void main(String[] args) {
         log.info("Starting http server...");
         try {
@@ -19,19 +20,19 @@ public class HttpServerApp {
             if (embeddedSiteLocation != null) {
 
                 ServerConfiguration config = new ServerConfiguration(embeddedSiteLocation.getPath());
-
                 WebSite website = new WebSite(config);
                 HttpHandlers handlers = new HttpHandlers(website);
                 ExecutorService executor = getExecutorService(config);
+
                 //start server and wait
                 new HttpServer(config, handlers, executor).start().join();
-            }
 
+            } else {
+                log.error("Could not locate embedded site");
+            }
         } catch (Exception e) {
             log.error("Http server error", e);
         }
-
-
     }
 
     private static ExecutorService getExecutorService(ServerConfiguration config) {

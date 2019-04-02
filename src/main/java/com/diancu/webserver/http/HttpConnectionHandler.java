@@ -30,7 +30,7 @@ public class HttpConnectionHandler implements Runnable {
                 handler.handle(httpReader, outputHandler);
             } else {
                 //this method is not supported yet
-                log.debug("Method {} not supported", statusLine.getMethod());
+                log.debug("Method '{}' not supported", statusLine.getMethod());
                 outputHandler.writeStatusNotImplemented().writeNewLine().flush();
             }
         } catch (IOException e) {

@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 
 @Slf4j
 public class FileResource implements WebResource {
@@ -21,8 +22,12 @@ public class FileResource implements WebResource {
 
     @Override
     public String getContentType() {
+        return getFileContentType(sourceFile);
+    }
+
+    private static String getFileContentType(File sourceFile) {
         try {
-            return isFolder() ? "text/html"
+            return sourceFile.isDirectory() ? "text/html"
                 : Files.probeContentType(sourceFile.toPath());
         } catch (IOException e) {
             log.error("error getting content type for file: {}", sourceFile);
@@ -75,10 +80,18 @@ public class FileResource implements WebResource {
             //check folder content and generate separately table rows for folders and files
             for (File file : content) {
                 if (file.isDirectory()) {
-                    folderRows.append("<tr><td><a href='").append(file.getName()).append("/'>").append(file.getName()).append("</a></td></tr>");
+                    folderRows.append("<tr>")
+                            .append("<td><a href='").append(file.getName()).append("/'><b>").append(file.getName()).append("</b></a></td>")
+                            .append("<td>-</td>")
+                            .append("<td>-</td>")
+                            .append("</tr>");
                 }
                 if (file.isFile()) {
-                    fileRows.append("<tr><td><a href='").append(file.getName()).append("'>").append(file.getName()).append("</a></td></tr>");
+                    fileRows.append("<tr>")
+                            .append("<td><a href='").append(file.getName()).append("'>").append(file.getName()).append("</a></td>")
+                            .append("<td>").append(readableFileSize(file.length())).append("</a></td>")
+                            .append("<td>").append(FileResource.getFileContentType(file)).append("</a></td>")
+                            .append("</tr>");
                 }
             }
             //add folders rows first, then file rows
@@ -95,5 +108,13 @@ public class FileResource implements WebResource {
 
     private String folderName() {
         return isRoot ? "Root" : sourceFile.getName();
+    }
+
+    //https://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
+    public static String readableFileSize(long size) {
+        if(size <= 0) return "0";
+        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 }

@@ -113,7 +113,7 @@ public class HttpServerIT {
     public void testPutMethod() throws IOException {
         String uri = "/sayHello.html";
         String body = "hello world";
-        URL url = new URL("http://localhost" + uri);
+        URL url = new URL("http","localhost", config.getServerPort(),  uri);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("PUT");
         connection.setDoInput(true);

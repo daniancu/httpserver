@@ -27,7 +27,7 @@ public class WebSite {
         log.debug("requestedFile: {}", requestedFile);
 
         if (requestedFile.exists()) {
-            return new FileResource(requestedFile);
+            return new FileResource(requestedFile, rootFolder.toPath().equals(requestedFile.toPath()));
         }
 
         log.info("Resource '{}' not found");

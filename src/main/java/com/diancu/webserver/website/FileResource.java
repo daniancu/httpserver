@@ -17,13 +17,16 @@ public class FileResource implements WebResource {
         contentTypes.put("txt", "text/plain");
         contentTypes.put("html", "text/html");
         contentTypes.put("jpg", "image/jpeg");
+        contentTypes.put("png", "image/png");
     }
 
     private final File sourceFile;
+    private final boolean isRoot;
 
-    public FileResource(File sourceFile) {
+    public FileResource(File sourceFile, boolean isRoot) {
 
         this.sourceFile = sourceFile;
+        this.isRoot = isRoot;
     }
 
     @Override
@@ -97,6 +100,6 @@ public class FileResource implements WebResource {
     }
 
     private String folderName() {
-        return sourceFile.getName();
+        return isRoot ? "Root" : sourceFile.getName();
     }
 }

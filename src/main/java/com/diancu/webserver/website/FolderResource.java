@@ -106,11 +106,14 @@ public class FolderResource implements WebResource {
         return isRoot ? "Root" : sourceFile.getName();
     }
 
+    //Based on
     //https://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
-    public static String readableFileSize(long size) {
+    private static final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+    private static DecimalFormat decimalFormat = new DecimalFormat("#,##0.#");
+
+    static String readableFileSize(long size) {
         if(size <= 0) return "0";
-        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
         int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        return decimalFormat.format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 }

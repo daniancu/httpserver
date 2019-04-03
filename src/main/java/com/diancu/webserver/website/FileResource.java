@@ -28,11 +28,6 @@ public class FileResource implements WebResource {
     }
 
     @Override
-    public long getSize() {
-        return sourceFile.length();
-    }
-
-    @Override
     public Path getPath() {
         return Paths.get(sourceFile.getAbsolutePath());
     }

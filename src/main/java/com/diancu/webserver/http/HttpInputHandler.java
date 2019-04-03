@@ -20,9 +20,9 @@ public class HttpInputHandler  {
     public HttpInputHandler(InputStream inputStream, HttpConfiguration config) {
         this.config = config;
         if (inputStream instanceof BufferedInputStream) {
-            inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            inputStreamReader = new InputStreamReader(inputStream, Charset.forName(config.getEncoding()));
         } else {
-            inputStreamReader = new InputStreamReader(new BufferedInputStream(inputStream), Charset.forName("UTF-8"));
+            inputStreamReader = new InputStreamReader(new BufferedInputStream(inputStream), Charset.forName(config.getEncoding()) );
         }
     }
 
@@ -60,7 +60,7 @@ public class HttpInputHandler  {
 
     private String nextLine() throws IOException {
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
-
+        PrintWriter pw = new PrintWriter(buff);
         int nextChar  = inputStreamReader.read();
         int lineLength = 0;
         while (nextChar > 0 && nextChar != '\n') {
@@ -68,10 +68,12 @@ public class HttpInputHandler  {
             if (lineLength > config.getMaxStatusLineLength()) {
                 throw new InvalidStatusLineException("Status line exceeded " + config.getMaxStatusLineLength());
             }
-            buff.write(nextChar);
+            pw.write(nextChar);
             nextChar  = inputStreamReader.read();
         }
-        String nextLine = buff.toString("UTF-8");
+        pw.close();
+        String nextLine = buff.toString(config.getEncoding());
+        System.out.println("nextLine = " + nextLine);
         log.debug("nextLine: {}", nextLine);
         return nextLine;
     }
@@ -88,14 +90,6 @@ public class HttpInputHandler  {
         }
         buffStream.writeTo(outputStream);
         buffStream.close();
-    }
-
-    void debugToOutput() throws IOException {
-        log.debug("Http request ----");
-        System.out.println(getStatusLine());
-        System.out.println(getHeaders());
-        writeRequestBody(System.out);
-        log.debug("End request ----");
     }
 
     public String getHeader(String name) throws IOException {

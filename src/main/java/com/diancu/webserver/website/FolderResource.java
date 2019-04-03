@@ -3,10 +3,8 @@ package com.diancu.webserver.website;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 
 @Slf4j
 public class FolderResource implements WebResource {
@@ -25,26 +23,6 @@ public class FolderResource implements WebResource {
         return "text/html";
     }
 
-    private static String getFileContentType(File sourceFile) {
-        try {
-            return sourceFile.isDirectory() ? "text/html"
-                : Files.probeContentType(sourceFile.toPath());
-        } catch (IOException e) {
-            log.error("error getting content type for file: {}", sourceFile);
-            return "application/octet-stream";
-        }
-    }
-
-    @Override
-    public long getSize() {
-        try {
-            return getFolderInputStream().available();
-        } catch (IOException e) {
-            log.debug("Error getting folder size", e);
-            return 0;
-        }
-    }
-
     @Override
     public Path getPath() {
         return Paths.get(sourceFile.getAbsolutePath());
@@ -57,17 +35,13 @@ public class FolderResource implements WebResource {
 
     @Override
     public InputStream getInputStream() {
-        return getFolderInputStream();
-    }
-
-    private InputStream getFolderInputStream() {
         log.debug("Generating directory indexing page for folder: {}", sourceFile);
         File[] content =  sourceFile.listFiles();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintWriter pw = new PrintWriter(outputStream);
         pw.println("<html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'><body>");
-        pw.println("<h1>" + folderName() + "</h1>");
+        pw.println("<h1>" + UIUtils.folderDisplayName(sourceFile, isRoot) + "</h1>");
         pw.println(isRoot ? ".." :  "<a href='../'>..</a>");
         if (content != null && content.length > 0) {
             pw.println("<table>");
@@ -77,16 +51,16 @@ public class FolderResource implements WebResource {
             for (File file : content) {
                 if (file.isDirectory()) {
                     folderRows.append("<tr>")
-                            .append("<td><a href='").append(file.getName()).append("/'><b>").append(file.getName()).append("</b></a></td>")
+                            .append("<td><a href='").append(UIUtils.encodeName(file)).append("/'><b>").append(file.getName()).append("</b></a></td>")
                             .append("<td>-</td>")
                             .append("<td>-</td>")
                             .append("</tr>");
                 }
                 if (file.isFile()) {
                     fileRows.append("<tr>")
-                            .append("<td><a href='").append(file.getName()).append("'>").append(file.getName()).append("</a></td>")
-                            .append("<td>").append(readableFileSize(file.length())).append("</a></td>")
-                            .append("<td>").append(FolderResource.getFileContentType(file)).append("</a></td>")
+                            .append("<td><a href='").append(UIUtils.encodeName(file)).append("'>").append(file.getName()).append("</a></td>")
+                            .append("<td>").append(UIUtils.readableFileSize(file.length())).append("</a></td>")
+                            .append("<td>").append(UIUtils.getDisplayContentType(file)).append("</a></td>")
                             .append("</tr>");
                 }
             }
@@ -102,18 +76,4 @@ public class FolderResource implements WebResource {
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
-    private String folderName() {
-        return isRoot ? "Root" : sourceFile.getName();
-    }
-
-    //Based on
-    //https://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
-    private static final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
-    private static DecimalFormat decimalFormat = new DecimalFormat("#,##0.#");
-
-    static String readableFileSize(long size) {
-        if(size <= 0) return "0";
-        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-        return decimalFormat.format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-    }
 }

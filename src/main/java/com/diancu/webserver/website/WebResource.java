@@ -8,8 +8,6 @@ public interface WebResource {
 
     String getContentType();
 
-    long getSize();
-
     Path getPath();
 
     boolean isFolder();

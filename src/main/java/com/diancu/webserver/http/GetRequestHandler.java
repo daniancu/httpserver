@@ -5,6 +5,7 @@ import com.diancu.webserver.website.WebSite;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Slf4j
 public class GetRequestHandler implements HttpRequestHandler {
@@ -26,14 +27,15 @@ public class GetRequestHandler implements HttpRequestHandler {
 
         WebResource resource = webSite.locate(inputHandler.getStatusLine().getResourceUri());
         if (resource != null) {
+            InputStream inputStream = resource.getInputStream();
             outputHandler.writeStatusOk();
             outputHandler.writeCommonHeaders();
             outputHandler.writeHeader(HttpHeaders.CONTENT_TYPE, resource.getContentType());
-            outputHandler.writeHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.getSize()));
+            outputHandler.writeHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(inputStream.available()));
             outputHandler.writeNewLine().flush();
             if (sendBody) {//HEAD command does not send body
                 try {
-                    outputHandler.writeFrom(resource.getInputStream());
+                    outputHandler.writeFrom(inputStream);
                 } finally {
                     outputHandler.flush();
                 }

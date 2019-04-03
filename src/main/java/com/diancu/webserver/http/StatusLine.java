@@ -1,9 +1,14 @@
 package com.diancu.webserver.http;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 
-
+@Slf4j
 public class StatusLine {
 
     private String[] fields;
@@ -25,7 +30,16 @@ public class StatusLine {
     }
 
     public String getResourceUri() {
-        return fields[1];
+        return getResourceUri(StandardCharsets.UTF_8.name());
+    }
+
+    public String getResourceUri(String enc) {
+        try {
+            return URLDecoder.decode(fields[1], enc);
+        } catch (UnsupportedEncodingException e) {
+            log.error("decode error", e);
+            return fields  [1];
+        }
     }
 
     public String getProtocol() {

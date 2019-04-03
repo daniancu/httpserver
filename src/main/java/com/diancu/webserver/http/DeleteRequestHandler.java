@@ -19,7 +19,6 @@ public class DeleteRequestHandler implements HttpRequestHandler {
 
         String resourceUri = inputHandler.getStatusLine().getResourceUri();
 
-
         if (webSite.delete(resourceUri)) {
             outputHandler.writeStatusCreated()
                     .writeCommonHeaders()

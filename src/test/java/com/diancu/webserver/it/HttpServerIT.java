@@ -72,14 +72,7 @@ public class HttpServerIT {
         Assert.assertEquals( "content type error", "text/html", con.getHeaderField(HttpHeaders.CONTENT_TYPE));
         Assert.assertEquals(String.valueOf(token.getBytes().length), con.getHeaderField(HttpHeaders.CONTENT_LENGTH));
 
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuilder content = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
-        }
-        in.close();
+        StringBuilder content = readContent(con);
         Assert.assertEquals("file content error", token, content.toString());
 
         con.disconnect();
@@ -91,6 +84,33 @@ public class HttpServerIT {
         Assert.assertEquals("status code error", 404, con.getResponseCode());
         con.disconnect();
 
+        String testFolder = "testFolder";
+        File folder = new File(tempRoot.toFile(), testFolder);
+        if (folder.mkdir()) {
+            url = new URL("http", config.getServerHost(), config.getServerPort(), testFolder   );
+            con = (HttpURLConnection) url.openConnection();
+            con.setDoOutput(true);
+            con.setRequestMethod("GET");
+            Assert.assertEquals("status code error", 200, con.getResponseCode());
+            Assert.assertEquals( "content type error", "text/html", con.getHeaderField(HttpHeaders.CONTENT_TYPE));
+            content = readContent(con);
+            Assert.assertTrue(content.toString().contains("<h1>" + testFolder + "</h1>"));
+        } else {
+            Assert.fail("could not create folder in website");
+        }
+
+
+    }
+
+    private StringBuilder readContent(HttpURLConnection con) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuilder content = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        return content;
     }
 
     @Test

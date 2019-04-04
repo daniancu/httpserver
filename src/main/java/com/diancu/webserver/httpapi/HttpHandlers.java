@@ -14,6 +14,7 @@ public class HttpHandlers {
         methodHandlers.put("HEAD", new GetRequestHandler(webSite, false));
         methodHandlers.put("PUT", new PutRequestHandler(webSite));
         methodHandlers.put("DELETE", new DeleteRequestHandler(webSite));
+        methodHandlers.put("OPTIONS", new OptionsRequestHandler(webSite));
     }
 
     public HttpRequestHandler getHandler(String method) {

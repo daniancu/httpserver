@@ -21,9 +21,15 @@ public class WebSite {
         }
     }
 
-    public WebResource locate(String resource) {
-        log.info("Locating resource '{}'", resource);
-        File requestedFile = new File(rootFolder, resource);
+    /**
+     * Locates a resource in the website
+     *
+     * @param resourceUri relative path to the resource
+     * @return resource object or null if resource does not exist
+     */
+    public WebResource locate(String resourceUri) {
+        log.info("Locating resource '{}'", resourceUri);
+        File requestedFile = new File(rootFolder, resourceUri);
         log.debug("requestedFile: {}", requestedFile);
 
         if (requestedFile.exists()) {
@@ -32,7 +38,7 @@ public class WebSite {
                     : new FileResource(requestedFile);
         }
 
-        log.info("Resource '{}' not found");
+        log.info("Resource '{}' not found", resourceUri);
         return null;
     }
 

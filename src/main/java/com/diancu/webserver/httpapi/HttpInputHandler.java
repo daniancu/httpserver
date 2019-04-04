@@ -114,7 +114,6 @@ public class HttpInputHandler {
         }
         pw.close();
         String nextLine = buff.toString(config.getEncoding());
-        System.out.println("nextLine = " + nextLine);
         log.debug("nextLine: {}", nextLine);
         return nextLine;
     }

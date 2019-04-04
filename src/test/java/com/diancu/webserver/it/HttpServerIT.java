@@ -48,34 +48,11 @@ public class HttpServerIT {
     public void testUnsupportedMethod() throws IOException {
         URL url = new URL("http", config.getServerHost(), config.getServerPort(), "/");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("OPTIONS");
+        con.setRequestMethod("TRACE");
 
         Assert.assertEquals("status code error", 501, con.getResponseCode());
         con.disconnect();
     }
-
-    @Test
-    public void testGETMissingResourceReturns404() throws IOException {
-        URL url = new URL("http", config.getServerHost(), config.getServerPort(), "missing.html");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-
-        Assert.assertEquals("status code error", 404, con.getResponseCode());
-        con.disconnect();
-    }
-
-    @Test
-    public void testSendBAdStatusLineReturns400() throws IOException {
-        /*URL url = new URL("http", config.getServerHost(), config.getServerPort(), "test.txt");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("PUT");
-
-        PrintWriter pw = new PrintWriter(con.getOutputStream());
-        pw.print("testing testing");
-        pw.close();
-        con.disconnect();*/
-    }
-
 
     @Test
     public void testGetMethod() throws IOException {
@@ -107,6 +84,13 @@ public class HttpServerIT {
 
         con.disconnect();
 
+        url = new URL("http", config.getServerHost(), config.getServerPort(), "missing.html");
+        con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        Assert.assertEquals("status code error", 404, con.getResponseCode());
+        con.disconnect();
+
     }
 
     @Test
@@ -134,5 +118,32 @@ public class HttpServerIT {
 
     }
 
+    @Test
+    public void testDeleteMethod() {
+
+    }
+
+    @Test
+    public void testOptionsMethod() throws IOException {
+        URL url = new URL("http","localhost", config.getServerPort(),  "/*");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("OPTIONS");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+
+        Assert.assertEquals(200, connection.getResponseCode());
+        Assert.assertEquals("GET,HEAD,PUT,DELETE,OPTIONS", connection.getHeaderField(HttpHeaders.ALLOW));
+        Assert.assertEquals("0", connection.getHeaderField(HttpHeaders.CONTENT_LENGTH));
+
+        connection.disconnect();
+        url = new URL("http","localhost", config.getServerPort(),  "/missing.txt");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("OPTIONS");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+
+        Assert.assertEquals(404, connection.getResponseCode());
+        connection.disconnect();
+    }
 
 }

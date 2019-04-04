@@ -5,7 +5,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class HttpInputHandlerTest {
 
@@ -24,6 +27,7 @@ public class HttpInputHandlerTest {
         ByteArrayOutputStream message = new ByteArrayOutputStream();
         PrintWriter sw = new PrintWriter(message);
         sw.println("PUT /test.html HTTP/1.1");
+        sw.println("HOST: localhost");
         sw.println("Content-type: text/html");
         sw.println("Content-length: " + bodyLength);
         sw.println();
@@ -34,7 +38,7 @@ public class HttpInputHandlerTest {
         HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
         Assert.assertEquals("PUT", httpInputHandler.getStatusLine().getMethod());
         Assert.assertEquals("/test.html", httpInputHandler.getStatusLine().getResourceUri());
-        Assert.assertEquals("HTTP/1.1", httpInputHandler.getStatusLine().getProtocol());
+        Assert.assertEquals("HTTP/1.1", httpInputHandler.getStatusLine().getProtocol().asString());
         Assert.assertEquals("text/html", httpInputHandler.getHeader("content-type"));
         Assert.assertEquals(String.valueOf(bodyLength), httpInputHandler.getHeader("content-length"));
         ByteArrayOutputStream bodyOut = new ByteArrayOutputStream();
@@ -68,7 +72,7 @@ public class HttpInputHandlerTest {
     @Test (expected = InvalidStatusLineException.class)
     public void testWhenStatusExceedsMaxLength_thenParserFails() throws IOException {
         String statusLine = "GET /test.html HTTP/1.1";
-        config.setMaxStatusLineLength(statusLine.length() - 1);
+        config.setMaxHeaderLineLength(statusLine.length() - 1);
         ByteArrayOutputStream message = new ByteArrayOutputStream();
         PrintWriter sw = new PrintWriter(message);
         sw.println(statusLine);
@@ -79,7 +83,7 @@ public class HttpInputHandlerTest {
     }
 
     @Test (expected = InvalidHeadersException.class)
-    public void testWhenHeaderHeaderHasNoSeparator_thenParserFails() throws IOException {
+    public void testWhenHeaderHasNoSeparator_thenParserFails() throws IOException {
         ByteArrayOutputStream message = new ByteArrayOutputStream();
         PrintWriter sw = new PrintWriter(message);
         sw.println("GET /test.html HTTP/1.1");
@@ -88,6 +92,41 @@ public class HttpInputHandlerTest {
         sw.close();
         HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
         httpInputHandler.getHeader("content-type");
+    }
+
+    @Test (expected = InvalidHeadersException.class)
+    public void testWhenTwoHOSTHeaders_thenParserFails() throws IOException {
+        ByteArrayOutputStream message = new ByteArrayOutputStream();
+        PrintWriter sw = new PrintWriter(message);
+        sw.println("GET /test.html HTTP/1.1");
+        sw.println("HOST: alfa");
+        sw.println("HOST: beta");
+        sw.println();
+        sw.close();
+        HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
+        httpInputHandler.getHeader("host");
+    }
+
+    @Test (expected = InvalidStatusLineException.class)
+    public void testWhenProtocolIsBad_thenParserFails() throws IOException {
+        ByteArrayOutputStream message = new ByteArrayOutputStream();
+        PrintWriter sw = new PrintWriter(message);
+        sw.println("GET /test.html HTTR/1.1");
+        sw.println();
+        sw.close();
+        HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
+        httpInputHandler.getStatusLine();
+    }
+
+    @Test (expected = InvalidStatusLineException.class)
+    public void testWhenBadProtocolVersion_thenParserFails() throws IOException {
+        ByteArrayOutputStream message = new ByteArrayOutputStream();
+        PrintWriter sw = new PrintWriter(message);
+        sw.println("GET /test.html HTTP/11");
+        sw.println();
+        sw.close();
+        HttpInputHandler httpInputHandler = new HttpInputHandler(new ByteArrayInputStream(message.toByteArray()), config);
+        httpInputHandler.getStatusLine();
     }
 
 }

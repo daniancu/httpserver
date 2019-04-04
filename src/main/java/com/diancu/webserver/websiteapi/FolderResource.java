@@ -1,5 +1,6 @@
 package com.diancu.webserver.websiteapi;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Slf4j
+@Getter
 public class FolderResource implements WebResource {
 
     private final File sourceFile;
@@ -19,6 +21,8 @@ public class FolderResource implements WebResource {
     public FolderResource(File sourceFile, boolean isRoot) {
         this.sourceFile = sourceFile;
         this.isRoot = isRoot;
+        //we use the default renderer that displays the folder content as a HTML page
+        //in the future we could inject it to support other representations,e.g JSON
         this.renderer = new FolderContentRenderer() {};
     }
 
@@ -45,16 +49,7 @@ public class FolderResource implements WebResource {
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
-    /** package level methods, used by FolderContentRenderer to display folder content */
-    boolean isRoot() {
-        return isRoot;
-    }
-
-    File[] listFiles() {
+    public File[] listFiles() {
         return sourceFile.listFiles();
-    }
-
-    File getSourceFile() {
-        return sourceFile;
     }
 }

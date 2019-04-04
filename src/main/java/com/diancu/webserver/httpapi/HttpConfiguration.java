@@ -9,7 +9,7 @@ public interface HttpConfiguration {
 
     int getSoTimeout();
 
-    int getMaxStatusLineLength();
+    int getMaxHeaderLineLength();
 
     default String getEncoding() {
         return StandardCharsets.UTF_8.name();

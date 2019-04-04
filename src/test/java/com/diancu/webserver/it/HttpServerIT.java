@@ -2,9 +2,9 @@ package com.diancu.webserver.it;
 
 
 import com.diancu.webserver.httpapi.HttpHandlers;
-import com.diancu.webserver.serverapp.ServerConfiguration;
 import com.diancu.webserver.httpapi.HttpHeaders;
 import com.diancu.webserver.httpapi.HttpServer;
+import com.diancu.webserver.serverapp.ServerConfiguration;
 import com.diancu.webserver.websiteapi.WebSite;
 import org.junit.After;
 import org.junit.Assert;

@@ -14,7 +14,7 @@ public class ServerConfiguration implements HttpConfiguration, WebSiteConfigurat
     private int serverPort;
     private String rootFolderPath;
     private int workerThreads;
-    private int maxStatusLineLength;
+    private int maxHeaderLineLength;
     private int soTimeout;
 
     public ServerConfiguration(String serverRoot) {
@@ -22,7 +22,7 @@ public class ServerConfiguration implements HttpConfiguration, WebSiteConfigurat
         serverPort = 8001;
         rootFolderPath = serverRoot;
         workerThreads = 30;
-        maxStatusLineLength = 300;
+        maxHeaderLineLength = 300;
         soTimeout = 0;
     }
 

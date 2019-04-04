@@ -12,6 +12,7 @@ import java.util.Objects;
 public class StatusLine {
 
     private String[] fields;
+    private HttpProtocol protocol;
 
     public StatusLine(String line) throws InvalidStatusLineException {
         parseLine(line);
@@ -23,6 +24,7 @@ public class StatusLine {
         if (fields.length != 3) {
             throw new InvalidStatusLineException(line);
         }
+        protocol = new HttpProtocol(fields[2]);
     }
 
     public String getMethod() {
@@ -42,8 +44,8 @@ public class StatusLine {
         }
     }
 
-    public String getProtocol() {
-        return fields[2];
+    public HttpProtocol getProtocol() {
+        return protocol;
     }
 
     @Override

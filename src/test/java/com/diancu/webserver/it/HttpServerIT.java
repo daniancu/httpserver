@@ -87,14 +87,16 @@ public class HttpServerIT {
         String testFolder = "testFolder";
         File folder = new File(tempRoot.toFile(), testFolder);
         if (folder.mkdir()) {
-            url = new URL("http", config.getServerHost(), config.getServerPort(), testFolder   );
+            url = new URL("http", config.getServerHost(), config.getServerPort(), "/"   );
             con = (HttpURLConnection) url.openConnection();
             con.setDoOutput(true);
             con.setRequestMethod("GET");
             Assert.assertEquals("status code error", 200, con.getResponseCode());
             Assert.assertEquals( "content type error", "text/html", con.getHeaderField(HttpHeaders.CONTENT_TYPE));
             content = readContent(con);
-            Assert.assertTrue(content.toString().contains("<h1>" + testFolder + "</h1>"));
+            String folderHtmlContent = content.toString();
+            Assert.assertTrue(folderHtmlContent.contains("<h1>Root</h1>"));
+            Assert.assertTrue(folderHtmlContent.contains("testFolder"));
         } else {
             Assert.fail("could not create folder in website");
         }

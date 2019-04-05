@@ -49,12 +49,28 @@ public class WebSite {
 
     }
 
-    public boolean delete(String resourceUri) throws IOException {
+    /**
+     * Deletes a resource identified by an resourceUri. It does not support folder
+     *
+     * @param resourceUri resource identifier
+     * @return true if deleted, false otherwise
+     * @throws WebResourceNotFoundException resource could not be located
+     */
+    public boolean delete(String resourceUri) throws WebsiteException {
         WebResource res = locate(resourceUri);
-        if (res.isFolder()) {
-            return false;
+        if (res != null) {
+            if (!res.isFolder()) {
+                try {
+                    log.debug("Deleting file {} ...", res.getPath());
+                    return Files.deleteIfExists(res.getPath());
+                } catch (IOException e) {
+                    throw new WebsiteException("Failed to delete resource", e);
+                }
+            } else {
+                throw new WebsiteException("");
+            }
         } else {
-             return Files.deleteIfExists(res.getPath());
+            throw new WebResourceNotFoundException(resourceUri);
         }
     }
 }

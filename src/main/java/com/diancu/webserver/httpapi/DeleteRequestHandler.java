@@ -1,6 +1,8 @@
 package com.diancu.webserver.httpapi;
 
+import com.diancu.webserver.websiteapi.WebResourceNotFoundException;
 import com.diancu.webserver.websiteapi.WebSite;
+import com.diancu.webserver.websiteapi.WebsiteException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -19,12 +21,21 @@ public class DeleteRequestHandler implements HttpRequestHandler {
 
         String resourceUri = inputHandler.getStatusLine().getResourceUri();
 
-        if (webSite.delete(resourceUri)) {
-            outputHandler.writeStatusCreated()
+        try {
+            if (webSite.delete(resourceUri)) {
+                outputHandler.writeStatusNoContent()
+                        .writeCommonHeaders()
+                        .writeNewLine()
+                        .flush();
+            } else {
+
+            }
+        } catch (WebResourceNotFoundException e) {
+            outputHandler.writeStatusNotFound()
                     .writeCommonHeaders()
                     .writeNewLine()
                     .flush();
-        } else {
+        } catch (WebsiteException e) {
             outputHandler.writeStatusInternalError()
                     .writeCommonHeaders()
                     .writeNewLine()

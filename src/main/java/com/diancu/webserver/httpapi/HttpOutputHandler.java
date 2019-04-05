@@ -45,6 +45,10 @@ public class HttpOutputHandler {
         return writeStatus("HTTP/1.1 201 Created");
     }
 
+    public HttpOutputHandler writeStatusNoContent() {
+        return writeStatus("HTTP/1.1 204 No Content");
+    }
+
     private HttpOutputHandler writeStatus(String status) {
         log.debug("Sending status: {}", status);
         writer.println(status);

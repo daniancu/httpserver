@@ -94,7 +94,7 @@ public class WebSite {
                     if (tmpFile.renameTo(existingPath.toFile())){
                         return "replaced";
                     } else {
-                        throw new WebsiteException("Could not resource file" + resourceUri );
+                        throw new WebsiteException("Could not replace resource file" + resourceUri );
                     }
                 } catch (IOException e) {
                     throw new WebsiteException("Could not delete resource", e);

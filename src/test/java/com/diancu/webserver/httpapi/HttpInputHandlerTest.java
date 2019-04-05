@@ -43,7 +43,7 @@ public class HttpInputHandlerTest {
         Assert.assertEquals(String.valueOf(bodyLength), httpInputHandler.getHeader("content-length"));
         ByteArrayOutputStream bodyOut = new ByteArrayOutputStream();
         httpInputHandler.writeRequestBody(bodyOut);
-        Assert.assertEquals(bodyText, bodyOut.toString());
+        Assert.assertEquals(bodyText, bodyOut.toString(config.getEncoding()));
     }
 
     @Test (expected = InvalidStatusLineException.class)

@@ -23,7 +23,7 @@ public class HttpServerTest {
     private Path tempRoot;
 
     @Before
-    public void setup() throws IOException, InterruptedException {
+    public void setup() throws IOException {
         tempRoot = Files.createTempDirectory("httpsrv");
         config = new ServerConfiguration(tempRoot.toFile().getPath());
         WebSite website = new WebSite(config);
@@ -31,8 +31,7 @@ public class HttpServerTest {
         ExecutorService executor = Executors.newFixedThreadPool(config.getWorkerThreads());
         server = new HttpServer(config, handlers, executor);
         server.start();
-        //todo: need better way to wait until server is ready
-        Thread.sleep(1000);
+        server.waitForServerToStart(5000);
     }
 
     @After

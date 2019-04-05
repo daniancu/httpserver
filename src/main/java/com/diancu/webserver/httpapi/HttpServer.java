@@ -15,7 +15,7 @@ public class HttpServer {
     private final HttpConfiguration config;
     private final HttpHandlers handlers;
     private final ExecutorService executor;
-    private AtomicBoolean active = new AtomicBoolean(true);
+    private AtomicBoolean active = new AtomicBoolean(false);
     private ServerSocket serverSocket;
 
     public HttpServer(HttpConfiguration config, HttpHandlers handlers, ExecutorService executor) {
@@ -31,11 +31,12 @@ public class HttpServer {
                 serverSocket = new ServerSocket(config.getServerPort());
 
                 log.info ("Listening on port " + config.getServerPort() + " ...\n");
-
+                active.set(true);
                 while (active.get()) {
                     Socket socket = serverSocket.accept();
                     log.info("New connection from {}", socket.getRemoteSocketAddress());
                     socket.setSoTimeout(config.getSoTimeout());
+                    //setup a connection handler for this new connection
                     HttpInputHandler httpInputHandler = new HttpInputHandler(socket.getInputStream(), config);
                     HttpOutputHandler httpOutputHandler = new HttpOutputHandler(socket.getOutputStream());
                     HttpConnectionHandler runnable = new HttpConnectionHandler(httpInputHandler, httpOutputHandler, handlers);
@@ -70,5 +71,23 @@ public class HttpServer {
         log.info("Server was shut down");
     }
 
+    public void waitForServerToStart(long timeout) {
+        long startTime = System.currentTimeMillis();
+        long waitTime = timeout < 1000 ? timeout : 1000;
+        long elapsed;
+        while (!active.get()) {
+            try {
+                log.debug("Waiting {} milliseconds for server to start...", waitTime);
+                Thread.sleep(waitTime);
+                elapsed = System.currentTimeMillis() - startTime;
+                if (elapsed > timeout) {
+                    //waited more then timeout
+                    throw new RuntimeException(String.format("Server not started after %d milliseconds", elapsed));
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException("server not started", e);
+            }
+        }
 
+    }
 }

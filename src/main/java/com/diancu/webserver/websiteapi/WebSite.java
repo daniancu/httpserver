@@ -56,13 +56,13 @@ public class WebSite {
      * @return true if deleted, false otherwise
      * @throws WebResourceNotFoundException resource could not be located
      */
-    public boolean delete(String resourceUri) throws WebsiteException {
+    public void delete(String resourceUri) throws WebsiteException {
         WebResource res = locate(resourceUri);
         if (res != null) {
             if (!res.isFolder()) {
                 try {
                     log.debug("Deleting file {} ...", res.getPath());
-                    return Files.deleteIfExists(res.getPath());
+                    Files.delete(res.getPath());
                 } catch (IOException e) {
                     throw new WebsiteException("Failed to delete resource", e);
                 }

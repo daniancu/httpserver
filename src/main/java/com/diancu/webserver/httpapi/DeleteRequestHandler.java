@@ -22,14 +22,11 @@ public class DeleteRequestHandler implements HttpRequestHandler {
         String resourceUri = inputHandler.getStatusLine().getResourceUri();
 
         try {
-            if (webSite.delete(resourceUri)) {
-                outputHandler.writeStatusNoContent()
-                        .writeCommonHeaders()
-                        .writeNewLine()
-                        .flush();
-            } else {
-
-            }
+            webSite.delete(resourceUri);
+            outputHandler.writeStatusNoContent()
+                    .writeCommonHeaders()
+                    .writeNewLine()
+                    .flush();
         } catch (WebResourceNotFoundException e) {
             outputHandler.writeStatusNotFound()
                     .writeCommonHeaders()

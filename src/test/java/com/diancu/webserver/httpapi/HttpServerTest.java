@@ -85,7 +85,7 @@ public class HttpServerTest {
             Assert.assertTrue(folderHtmlContent.contains("<h1>Root</h1>"));
             Assert.assertTrue(folderHtmlContent.contains(siteFolder));
         } else {
-            Assert.fail("could not create folder in website");
+            Assert.fail("could not add folder in website");
         }
     }
 
@@ -115,9 +115,10 @@ public class HttpServerTest {
 
     @Test
     public void testPutMethod() throws IOException {
-        String uri = "/sayHello.html";
+        String uri = "sayHello.html";
         String body = "hello world";
 
+        //add file
         HttpURLConnection connection = openConnectionToResource(uri);
         connection.setRequestMethod("PUT");
         connection.setDoInput(true);
@@ -134,6 +135,26 @@ public class HttpServerTest {
         File fileOnSite = new File(tempRoot.toFile(), uri);
         Assert.assertTrue(fileOnSite.exists());
         Assert.assertEquals(body.getBytes().length, fileOnSite.length());
+
+        //replace file
+        connection = openConnectionToResource(uri);
+        connection.setRequestMethod("PUT");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "text/html");
+
+        osw = new OutputStreamWriter(connection.getOutputStream());
+        String body2 = "world has changed";
+        osw.write(body2);
+        osw.close();
+
+        Assert.assertEquals(204, connection.getResponseCode());
+        connection.disconnect();
+
+        fileOnSite = new File(tempRoot.toFile(), uri);
+        Assert.assertTrue(fileOnSite.exists());
+        Assert.assertEquals(body2.getBytes().length, fileOnSite.length());
+
     }
 
     @Test

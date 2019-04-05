@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Slf4j
 public class WebSite {
@@ -42,11 +43,10 @@ public class WebSite {
         return null;
     }
 
-    public boolean create(String resourceUri, File externalFile) {
+    public boolean add(String resourceUri, File externalFile) {
         File file = new File(rootFolder, resourceUri);
         log.debug("Creating resource {}...", file);
         return externalFile.renameTo(file);
-
     }
 
     /**
@@ -71,6 +71,37 @@ public class WebSite {
             }
         } else {
             throw new WebResourceNotFoundException(resourceUri);
+        }
+    }
+
+    public synchronized String addOrReplace(String resourceUri, File tmpFile) throws WebsiteException {
+        WebResource existing = locate(resourceUri);
+        if (existing == null) {
+            File dest = new File(rootFolder, resourceUri);
+            log.debug("Adding resource {}...", dest.getPath());
+            if (tmpFile.renameTo(dest)) {
+                return "added";
+            } else {
+                throw new WebsiteException("Could not add resource " + resourceUri);
+            }
+        } else {
+            if (!existing.isFolder()) {
+                try {
+                    Path existingPath = existing.getPath();
+                    log.debug("Deleting resource {}...", existing.getPath());
+                    Files.delete ( existing.getPath());
+                    log.debug("Adding resource {} from {}...", existing.getPath(), tmpFile.getPath());
+                    if (tmpFile.renameTo(existingPath.toFile())){
+                        return "replaced";
+                    } else {
+                        throw new WebsiteException("Could not resource file" + resourceUri );
+                    }
+                } catch (IOException e) {
+                    throw new WebsiteException("Could not delete resource", e);
+                }
+            } else {
+                throw new WebsiteException("Could not replace folder with file");
+            }
         }
     }
 }

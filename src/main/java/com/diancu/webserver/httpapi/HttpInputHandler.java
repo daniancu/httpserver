@@ -53,7 +53,7 @@ public class HttpInputHandler {
             int separatorIndex;
             String headerName;
             String headerValue;
-            while (!System.lineSeparator().equals(line)) {
+            while (line.length() > 0) {
                 separatorIndex = line.indexOf(':');
                 if (separatorIndex < 0) {
                     throw new InvalidHeadersException("Bad header line: [" + line + "]");
@@ -61,7 +61,7 @@ public class HttpInputHandler {
                     headerName = line.substring(0, separatorIndex).toLowerCase();
                     headerValue = line.substring(separatorIndex + 1).trim();
                     if (headerValidator.isValid(headerName, headerValue)) {
-                        httpHeaders.put(headerName, headerValue);
+                        httpHeaders.put(headerName.toLowerCase(), headerValue);
                     }
                 }
                 line = nextLine();
@@ -100,13 +100,11 @@ public class HttpInputHandler {
 
 
     private String nextLine() throws IOException {
-        char[] ls = System.lineSeparator().toCharArray();
-
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         PrintWriter pw = new PrintWriter(buff);
         int nextChar  = inputStreamReader.read();
         int lineLength = 0;
-        while (nextChar > 0 && nextChar != ls[0]) {
+        while (nextChar > 0 && (nextChar != '\n')) {
             lineLength++;
             if (lineLength > config.getMaxHeaderLineLength()) {
                 throw new InvalidStatusLineException("Header line exceeded " + config.getMaxHeaderLineLength());
@@ -114,18 +112,16 @@ public class HttpInputHandler {
             pw.write(nextChar);
             nextChar  = inputStreamReader.read();
         }
-        //write 1st char from line separator, e.g. \r on Win
-        pw.write(nextChar);
-        //if line separator has more then one chars, read remaining ones, e.g \n on Win
-        if (ls.length > 1) {
-            for (int i=1; i<ls.length; i++) {
-                pw.write(inputStreamReader.read());
-            }
-        }
         pw.close();
         String nextLine = buff.toString(config.getEncoding());
+        StringBuilder sb = new StringBuilder();
+        for (char c    : nextLine.toCharArray()) {
+          if (c != '\r') {
+              sb.append(c);
+          }
+        }
         log.debug("nextLine: {}", nextLine);
-        return nextLine;
+        return sb.toString();
     }
 
     public void writeRequestBody(OutputStream outputStream) throws IOException {

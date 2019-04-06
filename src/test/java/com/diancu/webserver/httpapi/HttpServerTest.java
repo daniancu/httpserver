@@ -41,8 +41,7 @@ public class HttpServerTest {
 
     @Test
     public void testUnsupportedMethod() throws IOException {
-        URL url = new URL("http", config.getServerHost(), config.getServerPort(), "/");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        HttpURLConnection con = openConnectionToResource("/");
         con.setRequestMethod("TRACE");
 
         Assert.assertEquals("status code error", 501, con.getResponseCode());
@@ -179,8 +178,7 @@ public class HttpServerTest {
 
     @Test
     public void testOptionsMethod() throws IOException {
-        URL url = new URL("http","localhost", config.getServerPort(),  "/*");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = openConnectionToResource("/");
         connection.setRequestMethod("OPTIONS");
         connection.setDoInput(true);
         connection.setDoOutput(true);

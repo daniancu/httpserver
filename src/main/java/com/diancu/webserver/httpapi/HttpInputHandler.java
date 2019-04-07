@@ -109,19 +109,15 @@ public class HttpInputHandler {
             if (lineLength > config.getMaxHeaderLineLength()) {
                 throw new InvalidStatusLineException("Header line exceeded " + config.getMaxHeaderLineLength());
             }
-            pw.write(nextChar);
+            if  (nextChar != '\r') {
+                pw.write(nextChar);
+            }
             nextChar  = inputStreamReader.read();
         }
         pw.close();
         String nextLine = buff.toString(config.getEncoding());
-        StringBuilder sb = new StringBuilder();
-        for (char c    : nextLine.toCharArray()) {
-          if (c != '\r') {
-              sb.append(c);
-          }
-        }
         log.debug("nextLine: {}", nextLine);
-        return sb.toString();
+        return nextLine;
     }
 
     public void writeRequestBody(OutputStream outputStream) throws IOException {

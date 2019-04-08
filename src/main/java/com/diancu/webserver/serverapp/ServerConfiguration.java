@@ -5,7 +5,8 @@ import com.diancu.webserver.websiteapi.WebSiteConfiguration;
 import lombok.Data;
 
 /**
- * Class that contains config serverapp properties
+ * Class that contains all apis config properties
+ * Uses Lombok @Data for getter/setter method generation
  */
 @Data
 public class ServerConfiguration implements HttpConfiguration, WebSiteConfiguration {

@@ -15,7 +15,7 @@ The project architecture has 3 main layers, each layer's components being stored
 
 
 The layer dependency can be seen below:
-(top layers depend on lower layers with the core having no dependencies like in a Onion style architecture) 
+(top layers depend on lower layers with the core having no dependencies like in an Onion style architecture) 
 
 
 ```

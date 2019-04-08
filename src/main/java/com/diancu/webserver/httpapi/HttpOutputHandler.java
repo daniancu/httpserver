@@ -1,14 +1,11 @@
 package com.diancu.webserver.httpapi;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Date;
 
 @Slf4j
@@ -79,12 +76,17 @@ public class HttpOutputHandler {
         return this;
     }
 
-    public void writeFromPath(Path path) throws IOException {
-        Files.copy(path, outputStream);
-    }
-
+    /**
+     * Writes to output stream all data available in the input stream then closes the input stream
+     * @param inputStream stream with data to copy
+     * @throws IOException
+     */
     public void writeFrom(InputStream inputStream) throws IOException {
-        IOUtils.copy(inputStream, outputStream);
+        byte[] buff = new byte[4 * 1024];
+        int readAmount;
+        while ((readAmount = inputStream.read(buff)) > 0) {
+            outputStream.write(buff, 0, readAmount);
+        }
         inputStream.close();
     }
 }

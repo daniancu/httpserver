@@ -28,14 +28,14 @@ public class PutRequestHandler implements HttpRequestHandler {
         outputStream.close();
 
         //add or replace file in website
-        String result;
+        WebSite.AddReplaceResult result;
         try {
             result = webSite.addOrReplace(resourceUri, tmpFile);
             log.debug("Add or replace resulr: {}", result );
 
-            if ("added".equalsIgnoreCase(result)) {
+            if (WebSite.AddReplaceResult.ADDED == result) {
                 outputHandler.writeStatusCreated();
-            } else if ("replaced".equalsIgnoreCase(result)) {
+            } else if (WebSite.AddReplaceResult.REPLACED == result) {
                 outputHandler.writeStatusNoContent();
             }
             outputHandler.writeCommonHeaders()

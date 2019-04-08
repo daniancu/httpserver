@@ -9,6 +9,13 @@ import java.nio.file.Path;
 
 @Slf4j
 public class WebSite {
+    /**
+     * Defines the result of an addOrReplace operation in the website
+     */
+    public enum AddReplaceResult {
+        ADDED,
+        REPLACED
+    }
 
     private final File rootFolder;
 
@@ -74,13 +81,18 @@ public class WebSite {
         }
     }
 
-    public synchronized String addOrReplace(String resourceUri, File tmpFile) throws WebsiteException {
+    public synchronized AddReplaceResult addOrReplace(String resourceUri, File tmpFile) throws WebsiteException {
         WebResource existing = locate(resourceUri);
         if (existing == null) {
             File dest = new File(rootFolder, resourceUri);
             log.debug("Adding resource {}...", dest.getPath());
+            if (!dest.getParentFile().exists()) {
+                if (!dest.getParentFile().mkdirs()) {
+                    throw new WebsiteException("Could not create parent folder for resource: " + resourceUri);
+                }
+            }
             if (tmpFile.renameTo(dest)) {
-                return "added";
+                return AddReplaceResult.ADDED;
             } else {
                 throw new WebsiteException("Could not add resource " + resourceUri);
             }
@@ -92,7 +104,7 @@ public class WebSite {
                     Files.delete ( existing.getPath());
                     log.debug("Adding resource {} from {}...", existing.getPath(), tmpFile.getPath());
                     if (tmpFile.renameTo(existingPath.toFile())){
-                        return "replaced";
+                        return AddReplaceResult.REPLACED;
                     } else {
                         throw new WebsiteException("Could not replace resource file" + resourceUri );
                     }
@@ -104,4 +116,6 @@ public class WebSite {
             }
         }
     }
+
+
 }

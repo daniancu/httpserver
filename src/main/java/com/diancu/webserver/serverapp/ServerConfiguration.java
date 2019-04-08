@@ -23,7 +23,7 @@ public class ServerConfiguration implements HttpConfiguration, WebSiteConfigurat
         serverPort = 8001;
         rootFolderPath = serverRoot;
         workerThreads = 30;
-        maxHeaderLineLength = 300;
+        maxHeaderLineLength = 65535;
         soTimeout = 0;
     }
 

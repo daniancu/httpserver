@@ -10,7 +10,15 @@ Project is structured in 3 layers, each layer components are packaged in it onw 
 
 `serverapp` - a sample HTTP server application and it's configuration for demo purposes. It runs by default on port `8001` and expose an embedded website
 
+Dependencies: 
 
+
+
+Requirements: 
+```
+Java 1.8
+Apache Maven 3 
+```
 
 To build and runt the server use Maven command
 ```

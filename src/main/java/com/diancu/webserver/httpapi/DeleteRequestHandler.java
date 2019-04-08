@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+/**
+ * HTTP DELETE implementation
+ */
 @Slf4j
 public class DeleteRequestHandler implements HttpRequestHandler {
     private final WebSite webSite;

@@ -5,6 +5,9 @@ import com.diancu.webserver.websiteapi.WebSite;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handler registry, uses a map to keep a handler instance for each supported method
+ */
 public class HttpHandlers {
     private Map<String, HttpRequestHandler> methodHandlers;
 

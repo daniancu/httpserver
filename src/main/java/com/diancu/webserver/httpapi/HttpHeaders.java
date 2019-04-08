@@ -1,5 +1,8 @@
 package com.diancu.webserver.httpapi;
 
+/**
+ * Basic http headers definitions
+ */
 public class HttpHeaders {
     public static final String CONNECTION = "Connection";
     public static final String DATE = "Date";

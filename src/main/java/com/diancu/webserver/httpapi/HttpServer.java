@@ -10,6 +10,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * This class implements and embeddable http server that runs in a separated thread and listens to socket connections
+ * It uses a dedicated thread pool of worker threads to handle new connections in parallel
+ * Current implementation does not support connection keep-alive, all connections are closed after handling
+ */
 @Slf4j
 public class HttpServer {
     private final HttpConfiguration config;
@@ -41,6 +46,7 @@ public class HttpServer {
                     HttpOutputHandler httpOutputHandler = new HttpOutputHandler(socket.getOutputStream());
                     HttpConnectionHandler runnable = new HttpConnectionHandler(httpInputHandler, httpOutputHandler, handlers);
                     //use a thread from conn pool to handle this connection
+                    //todo check what happens when an exception occurs
                     CompletableFuture.runAsync(runnable, executor).thenRun( () -> closeSocket(socket));
                 }
                 log.info("Shutting down ...");

@@ -8,6 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * StatusLine object is created from the request header (first line sent by client)
+ */
 @Slf4j
 public class StatusLine {
 

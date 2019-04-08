@@ -7,6 +7,9 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class that wraps the http input stream and reads the http message from it
+ */
 @Slf4j
 public class HttpInputHandler {
 
@@ -38,10 +41,11 @@ public class HttpInputHandler {
     }
 
     /**
-     * Parse the request headers
+     * Parse the request headers and decodes the headers into a map
      *
-     * @return
-     * @throws IOException
+     * @return map of header name -> header value
+     * @throws IOException thrown when an input error occurs
+     * @throws InvalidHeadersException if the header format is incorrect
      */
     private synchronized Map<String, String> getHeaders() throws IOException {
         StatusLine statusLine = getStatusLine();
@@ -98,7 +102,16 @@ public class HttpInputHandler {
         }
     }
 
-
+    /**
+     * Reads the next line from the stream. For compatibility with both Linux and Windows it reads until '\n' char is reached
+     * If the '\r' char is preceding the '\n', it si discarded. It does this because during tests on Linux, the browser used '\r' '\n\'
+     * as line terminator even if only '\n' was expected.
+     *
+     * Note: this implementation was not tested on MacOS, so errors might occur
+     *
+     * @return the next line from the input stream
+     * @throws IOException thrown when an error occur while reading the input stream
+     */
     private String nextLine() throws IOException {
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         PrintWriter pw = new PrintWriter(buff);
@@ -120,6 +133,11 @@ public class HttpInputHandler {
         return nextLine;
     }
 
+    /**
+     * Writes the body part of the HTTP request from the input stream to the specified outputStream, e.g a file output stream
+     * @param outputStream output stream where to write the file
+     * @throws IOException an error occurred while reading or writing a stream
+     */
     public void writeRequestBody(OutputStream outputStream) throws IOException {
         log.debug("Writing body...");
         String contentLength = getHeader(HttpHeaders.CONTENT_LENGTH);

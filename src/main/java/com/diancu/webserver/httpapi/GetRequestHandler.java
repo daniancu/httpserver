@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * HTTP GET/HEAD Implementation
+ */
 @Slf4j
 public class GetRequestHandler implements HttpRequestHandler {
     private final WebSite webSite;

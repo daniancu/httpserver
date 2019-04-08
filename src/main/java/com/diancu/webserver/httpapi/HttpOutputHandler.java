@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Date;
 
+/**
+ * Wraps the http output stream and writes different response parts (status line, headers, response body)
+ */
 @Slf4j
 public class HttpOutputHandler {
     private final PrintWriter writer;
@@ -79,7 +82,7 @@ public class HttpOutputHandler {
     /**
      * Writes to output stream all data available in the input stream then closes the input stream
      * @param inputStream stream with data to copy
-     * @throws IOException
+     * @throws IOException when a read/write error occurs
      */
     public void writeFrom(InputStream inputStream) throws IOException {
         byte[] buff = new byte[4 * 1024];

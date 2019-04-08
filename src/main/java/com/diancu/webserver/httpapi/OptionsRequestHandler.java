@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
 /**
+ * Handles the OPTIONS request
  * https://tools.ietf.org/html/rfc7231#section-4.3.7
  */
 @Slf4j
@@ -18,7 +19,7 @@ public class OptionsRequestHandler implements HttpRequestHandler {
 
     @Override
     public void handle(HttpInputHandler inputHandler, HttpOutputHandler outputHandler) throws IOException {
-        log.debug("Handling DELETE request: {}", inputHandler.getStatusLine());
+        log.debug("Handling OPTIONS request: {}", inputHandler.getStatusLine());
 
         String resourceUri = inputHandler.getStatusLine().getResourceUri();
         if ("/*".equalsIgnoreCase(resourceUri) || webSite.locate(resourceUri) != null) {

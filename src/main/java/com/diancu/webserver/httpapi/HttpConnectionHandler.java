@@ -4,6 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+/**
+ * Component that handles the HTTP input flow and generates the output response.
+ * It uses a registry of handlers and delegates the processing to a specific handler based on the HTTP method from status line
+ */
 @Slf4j
 public class HttpConnectionHandler implements Runnable {
     private final HttpInputHandler httpReader;
@@ -20,7 +24,7 @@ public class HttpConnectionHandler implements Runnable {
     @Override
     public void run() {
         log.info("Handling new connection...");
-
+        //reads the status line and delegates the input processing to the handler registered for that method
         try {
             StatusLine statusLine = httpReader.getStatusLine();
 

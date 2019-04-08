@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Handles a HTTP PUT request
+ */
 @Slf4j
 public class PutRequestHandler implements HttpRequestHandler {
     private final WebSite webSite;

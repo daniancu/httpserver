@@ -7,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * WebResource implementation for a static file
+ */
 @Slf4j
 public class FileResource implements WebResource {
 

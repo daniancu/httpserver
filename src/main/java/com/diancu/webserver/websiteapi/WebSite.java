@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Component that implements basic CRUD website functions
+ */
 @Slf4j
 public class WebSite {
     /**
@@ -50,17 +53,10 @@ public class WebSite {
         return null;
     }
 
-    public boolean add(String resourceUri, File externalFile) {
-        File file = new File(rootFolder, resourceUri);
-        log.debug("Creating resource {}...", file);
-        return externalFile.renameTo(file);
-    }
-
     /**
      * Deletes a resource identified by an resourceUri. It does not support folder
      *
      * @param resourceUri resource identifier
-     * @return true if deleted, false otherwise
      * @throws WebResourceNotFoundException resource could not be located
      */
     public void delete(String resourceUri) throws WebsiteException {
@@ -81,6 +77,14 @@ public class WebSite {
         }
     }
 
+    /**
+     * Adds  or replace a resource in the website
+     *
+     * @param resourceUri destination in the website
+     * @param tmpFile the file that contains the resource to be added/replaced
+     * @return ADDED if resource does not exist and was created, REPLACED if resource was replaced
+     * @throws WebsiteException
+     */
     public synchronized AddReplaceResult addOrReplace(String resourceUri, File tmpFile) throws WebsiteException {
         WebResource existing = locate(resourceUri);
         if (existing == null) {

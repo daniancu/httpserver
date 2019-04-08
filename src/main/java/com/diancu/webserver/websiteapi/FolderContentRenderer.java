@@ -5,7 +5,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
- * Render content from a web folder. Default implementations displays an HTML directory indexing
+ * Defines a component that displays the content of a folder resource in a website
+ * The default implementations displays the folder content as a HTML page with links to open files or subfolders
   */
 public interface FolderContentRenderer {
 

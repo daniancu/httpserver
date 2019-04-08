@@ -1,5 +1,8 @@
 package com.diancu.webserver.websiteapi;
 
+/**
+ * Exception thrown when abnormal situation occurs in website functionality
+ */
 public class WebsiteException extends Exception {
 
     public WebsiteException(String message) {

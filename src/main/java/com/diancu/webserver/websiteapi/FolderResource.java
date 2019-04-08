@@ -10,6 +10,10 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+
+/**
+ * WebResource implementation for a folder in a website
+ */
 @Slf4j
 @Getter
 public class FolderResource implements WebResource {
@@ -22,7 +26,7 @@ public class FolderResource implements WebResource {
         this.sourceFile = sourceFile;
         this.isRoot = isRoot;
         //we use the default renderer that displays the folder content as a HTML page
-        //in the future we could inject it to support other representations,e.g JSON
+        //in the future we could inject a different implementation to support other representations,e.g JSON
         this.renderer = new FolderContentRenderer() {};
     }
 

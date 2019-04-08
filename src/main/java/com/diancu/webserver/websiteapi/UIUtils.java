@@ -9,6 +9,9 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 
+/**
+ * Helper class with utility methods to help the UI generation
+ */
 @Slf4j
 public class UIUtils {
     private static DecimalFormat decimalFormat = new DecimalFormat("#,##0.#");

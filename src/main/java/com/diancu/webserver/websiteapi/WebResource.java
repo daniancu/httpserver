@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Path;
 
+/**
+ * Defines a web resource in a website
+ */
 public interface WebResource {
 
     String getContentType();

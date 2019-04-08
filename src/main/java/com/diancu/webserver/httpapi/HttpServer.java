@@ -46,7 +46,6 @@ public class HttpServer {
                     HttpOutputHandler httpOutputHandler = new HttpOutputHandler(socket.getOutputStream());
                     HttpConnectionHandler runnable = new HttpConnectionHandler(httpInputHandler, httpOutputHandler, handlers);
                     //use a thread from conn pool to handle this connection
-                    //todo check what happens when an exception occurs
                     CompletableFuture.runAsync(runnable, executor).thenRun( () -> closeSocket(socket));
                 }
                 log.info("Shutting down ...");

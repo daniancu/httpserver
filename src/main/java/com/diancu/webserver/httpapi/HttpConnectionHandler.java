@@ -44,6 +44,7 @@ public class HttpConnectionHandler implements Runnable {
             log.error("Invalid status or header", e);
             outputHandler.writeStatusBadRequest().writeNewLine().flush();
         } catch (RuntimeException e) {
+            //handle any unhandled exception here
             log.error("Error processing http request", e);
             outputHandler.writeStatusInternalError().writeNewLine().flush();
         }
